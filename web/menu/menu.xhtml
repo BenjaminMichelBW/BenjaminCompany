@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Menu</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+    </h:head>
+    <h:body>
+            <p:menu style="width: 190px">
+                <p:menuitem value=" Inicio" icon="pi pi-home" action="#{menuBean.seleccionMenu(1)}" update="panelCenter" style="font-size:19px;"/>
+                <p:submenu label="Catalogos">
+                    <p:menuitem value=" Cliente" icon="pi pi-users" action="#{menuBean.seleccionMenu(2)}" update="panelCenter" style="font-size:19px;"/>
+                    <p:menuitem value=" Distribuidor" icon="pi pi-briefcase" action="#{menuBean.seleccionMenu(3)}" update="panelCenter" style="font-size:19px;"/>
+                    <p:menuitem value=" Telefonia" icon="pi pi-id-card" action="#{menuBean.seleccionMenu(4)}" update="panelCenter" style="font-size:19px;"/>
+                </p:submenu>
+            </p:menu>
+    </h:body>
+</html>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>BenjaminCompany</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link href="#{loginBean.contextPath()}/imagenes/favicon.ico" rel="icon" type="image/x-icon" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    </h:head>
+    <style>
+        .over {
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+        .col {
+            top: 0; 
+            bottom: 0; 
+        }
+        .radio {
+            border-radius: 25px;
+        }
+
+    </style>
+    <h:body>
+        <form>
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"  />
+
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
+                <p:graphicImage value="/imagenes/carga.gif" width="60px" style=" margin-left: 20px"/><br/>
+                <h:outputLabel value="Cargando..." />
+            </p:dialog>
+        </form>
+        <p:idleMonitor timeout="60000">
+            <p:ajax event="active" onstart="PF('idleDialog').show();"/>
+        </p:idleMonitor>
+
+        <p:dialog widgetVar="idleDialog" draggable="false" closable="false" resizable="false" header="Sesion terminada" modal="true">
+            <p:panel>
+                <h:form>
+                    <p:outputLabel value="La sesión ha caducado por inactividad" /> <br/><br/>
+                    <p:commandButton action="#{loginBean.cerrarSession()}" value="Ok" oncomplete="PF('idleDialog').hide()" />
+                </h:form>
+            </p:panel>
+        </p:dialog>
+
+        <p:layout fullPage="true" >
+
+            <p:layoutUnit position="west">
+                <h:form>
+                    <ui:include src="/menu/menu.xhtml"/>
+                </h:form>    
+            </p:layoutUnit>
+
+            <p:layoutUnit position="north" size="160">
+                <ui:include src="/plantilla/cabecero.xhtml"/>                        
+            </p:layoutUnit>
+
+            <p:layoutUnit position="center" >
+                <p:panel id="panelCenter" styleClass="over col">
+                    <ui:include src="#{menuBean.opcion}"/>
+                </p:panel>
+            </p:layoutUnit>
+        </p:layout>
+
+    </h:body>
+</html>

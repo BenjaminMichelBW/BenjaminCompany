@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Catalogo Cliente</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <h2>Cliente</h2>
+            <p:growl id="msgs" showDetail="true"/>
+            <div class="card">
+                <p:tabView id="tvCliente" >
+                    <p:tab title="Panel" id="tabForm" >
+                        <p:commandButton value="Nuevo" style="margin-right:20px; font-size:19px;" action="#{clienteBean.nuevoCliente()}" update=":form:tvCliente" icon="pi pi-file-o"/>
+                        <p:commandButton value="Guardar" type="Submit" style="margin-right:20px;font-size:19px;" action="#{clienteBean.guardarCliente()}" update=":form:tvCliente, :form:msgs" icon="pi pi-save" />
+                        <p:commandButton value="Eliminar" style="margin-right:20px;font-size:19px;" onclick="PF('wdialogo').show();" icon="pi pi-trash" />
+
+                        <br/><br/>
+
+                        <div class="ui-g" >
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="idCliente" value="#{clienteBean.inputIdCliente == 0? '': clienteBean.inputIdCliente}" disabled="true"/>
+                                    <p:outputLabel for="idCliente" value="Código"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="numCliente" value="#{clienteBean.inputNumCliente}" required="true" requiredMessage="Se requiere un numero" maxlength="20"/>
+                                    <p:outputLabel for="numCliente" value="Numero"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="nombreCliente" value="#{clienteBean.inputNombreCliente}" required="true" requiredMessage="Se requiere un nombre" maxlength="20"/>
+                                    <p:outputLabel for="nombreCliente" value="Nombre"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:outputLabel for="idDistribuidor" value="Distribuidor "/>
+                                    <p:selectOneMenu id="idDistribuidor" value="#{clienteBean.inputIdDistribuidor}" style="width: 230px">
+                                        <f:selectItems value="#{clienteBean.listaDistribuidor}" var="dis" 
+                                                       itemLabel="#{dis.nombre}" itemValue="#{dis.idDistribuidor}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:outputLabel for="idCiudad" value="Ciudad "/> 
+                                    <p:selectOneMenu id="idCiudad" value="#{clienteBean.inputIdCiudad}" style="width: 230px">
+                                        <f:selectItems value="#{clienteBean.listaCiudad}" var="cli" 
+                                                       itemLabel="#{cli.descripcionCiudad}" itemValue="#{cli.idCiudad}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="telContacto" value="#{clienteBean.inputTelContacto}" required="true" requiredMessage="Se requiere un telefono" maxlength="20"/>
+                                    <p:outputLabel for="telContacto" value="Telefono"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="rfc" value="#{clienteBean.inputRfc}" required="true" requiredMessage="Se requiere una rfc" maxlength="28"/>
+                                    <p:outputLabel for="rfc" value="RFC"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="calle" value="#{clienteBean.inputCalle}" required="true" requiredMessage="Se requiere una calle" maxlength="100"/>
+                                    <p:outputLabel for="calle" value="Calle"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="numExt" value="#{clienteBean.inputNumExt}" required="true" requiredMessage="Se requiere un numero exterior" maxlength="20"/>
+                                    <p:outputLabel for="calle" value="Número exterior"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="colonia" value="#{clienteBean.inputColonia}" required="true" requiredMessage="Se requiere una colonia" maxlength="100"/>
+                                    <p:outputLabel for="colonia" value="Colonia"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="cp" value="#{clienteBean.inputCp}" required="true" requiredMessage="Se requiere un codigo postal" maxlength="12"/>
+                                    <p:outputLabel for="cp" value="Codigo postal"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:outputLabel for="estadoCliente" value="Estado "/>
+                                    <p:selectOneMenu id="estadoCliente" value="#{clienteBean.inputEstado}" style="width: 230px">
+                                        <f:selectItem itemLabel="Activo" itemValue="true"/>
+                                        <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                    </p:tab>
+                    <p:tab title="Registros" id="tbRegistrosCliente">
+                        <div class="ui-g" >
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="buscarNombreCliente" value="#{clienteBean.burcarNombreCliente}" maxlength="100"/>
+                                    <p:outputLabel for="buscarNombreCliente" value="Nombre"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="buscarCiudadCliente" value="#{clienteBean.buscarCiudadCliente}" maxlength="100"/>
+                                    <p:outputLabel for="buscarCiudadCliente" value="Ciudad"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <p:commandButton value="Buscar" style="font-size:19px; margin-right:20px;" process="@this form:tvCliente:tbRegistrosCliente" action="#{clienteBean.cargarDatosCliente()}" update="dtCliente" icon="pi pi-search" />
+                            </div>
+                        </div>
+                        <p:dataTable id="dtCliente" var="cliente" value="#{clienteBean.listaCliente}" emptyMessage="No se encontraron registros."
+                                     selectionMode="single" selection="#{clienteBean.seleccionCliente}" rowKey="#{cliente.idCliente}"
+                                     paginator="true" rows="5" sortMode="single" widgetVar="clienteTabla" 
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros">
+                            <p:ajax event="rowSelect" listener="#{clienteBean.onRowSelect}" update=":form:tvCliente"/>
+                            <p:column headerText="Código">
+                                <h:outputText value="#{cliente.idCliente}" />
+                            </p:column>
+                            <p:column headerText="Número cliente" sortBy="#{cliente.numCliente}" filterBy="#{cliente.numCliente}">
+                                <h:outputText value="#{cliente.numCliente}" />
+                            </p:column>
+                            <p:column headerText="Nombre cliente" sortBy="#{cliente.nombreCliente}" filterBy="#{cliente.nombreCliente}">
+                                <h:outputText value="#{cliente.nombreCliente}" />
+                            </p:column>
+                            <p:column headerText="Nombre distribuidor" sortBy="#{cliente.nombreDistribuidor}" filterBy="#{cliente.nombreDistribuidor}">
+                                <h:outputText value="#{cliente.nombreDistribuidor}" />
+                            </p:column>
+                            <p:column headerText="Ciudad" sortBy="#{cliente.descripcionCiudad}" filterBy="#{cliente.descripcionCiudad}">
+                                <h:outputText value="#{cliente.descripcionCiudad}" />
+                            </p:column>
+                            <p:column headerText="Telefono" sortBy="#{cliente.telContacto}" filterBy="#{cliente.telContacto}">
+                                <h:outputText value="#{cliente.telContacto}" />
+                            </p:column>
+                            <p:column headerText="RFC" sortBy="#{cliente.rfc}" filterBy="#{cliente.rfc}">
+                                <h:outputText value="#{cliente.rfc}" />
+                            </p:column>
+                            <p:column headerText="Calle" sortBy="#{cliente.calle}" filterBy="#{cliente.calle}">
+                                <h:outputText value="#{cliente.calle}" />
+                            </p:column>
+                            <p:column headerText="Num. Ext." sortBy="#{cliente.numExt}" filterBy="#{cliente.numExt}">
+                                <h:outputText value="#{cliente.numExt}" />
+                            </p:column>
+                            <p:column headerText="Colonia" sortBy="#{cliente.colonia}" filterBy="#{cliente.colonia}">
+                                <h:outputText value="#{cliente.colonia}" />
+                            </p:column>
+                            <p:column headerText="Codigo postal" sortBy="#{cliente.cp}" filterBy="#{cliente.cp}">
+                                <h:outputText value="#{cliente.cp}" />
+                            </p:column>
+                            <p:column headerText="Estado" sortBy="#{cliente.estado}" filterBy="#{cliente.estado == true? 'Activo' : 'Inactivo'}">
+                                <h:outputText value="#{cliente.estado == true? 'Activo' : 'Inactivo'}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+                </p:tabView>
+                <p:dialog id="dialogoEliminar" widgetVar="wdialogo" header="Confirmar Eliminación" height="80" width="350">
+                    <p:commandButton value="Aceptar" ajax="false" action="#{clienteBean.eliminarCliente()}" update=":form:tvCliente, :form:msgs" oncomplete="PF('wdialogo').hide();" style="font-size:19px;"/>
+                    <p:commandButton value="Cancelar" icon="ui-icon-close" immediate="true" onclick="PF('wdialogo').hide();" style="font-size:19px;"/>
+
+                </p:dialog>
+            </div>
+
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Catalogo Distribuidor</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <h2>Distribuidor</h2>
+            <p:growl id="msgs" showDetail="true"/>
+
+            <div class="card">
+                <p:tabView id="tvDistribuidor">
+                    <p:tab title="Panel" id="tabForm" >
+
+                        <p:commandButton value="Nuevo" style="font-size:19px;margin-right:20px;" action="#{distribuidorBean.nuevoDistribuidor()}" update=":form:tvDistribuidor" icon="pi pi-file-o" />
+                        <p:commandButton value="Guardar" type="Submit" style="font-size:19px;margin-right:20px;" action="#{distribuidorBean.guardarDistribuidor()}" update=":form:tvDistribuidor, :form:msgs" icon="pi pi-save"/>
+                        <p:commandButton value="Eliminar" style="font-size:19px;margin-right:20px;" onclick="PF('wdialogo').show();" icon="pi pi-trash"/>
+
+                        <br/><br/>
+
+                        <div class="ui-g" >
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="idDistribuidor" value="#{distribuidorBean.idIntPutDistribuidor == 0? '': distribuidorBean.idIntPutDistribuidor}" disabled="true"/>
+                                    <p:outputLabel for="idDistribuidor" value="Código"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="claveDistribuidor" value="#{distribuidorBean.intPutClave}" required="true" requiredMessage="Se requiere una clave" maxlength="100"/>
+                                    <p:outputLabel for="claveDistribuidor" value="Clave"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="nombreDistribuidor" value="#{distribuidorBean.intPutNombre}" required="true" requiredMessage="Se requiere un nombre" maxlength="100"/>
+                                    <p:outputLabel for="nombreDistribuidor" value="Nombre"/>
+                                </span>
+                            </div><br/>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <div class="p-field p-col-12 p-md-4">
+                                    <p:outputLabel for="estadoDistribuidor" value="Estado "/>
+                                    <p:selectOneMenu id="estadoDistribuidor" value="#{distribuidorBean.intPutEstado}" style="width: 230px">
+                                        <f:selectItem itemLabel="Activo" itemValue="true"/>
+                                        <f:selectItem itemLabel="Inactivo" itemValue="false"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+
+                    </p:tab>
+                    <p:tab title="Registros" id="tbRegistrosDistribuidor">
+
+                        <div class="ui-g" >
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="buscarClaveDistribuidor" value="#{distribuidorBean.buscarClave}" maxlength="100"/>
+                                    <p:outputLabel for="buscarClaveDistribuidor" value="Clave"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <span class="ui-float-label">
+                                    <p:inputText id="buscarNombreDistribuidor" value="#{distribuidorBean.buscarNombre}" maxlength="100"/>
+                                    <p:outputLabel for="buscarNombreDistribuidor" value="Nombre"/>
+                                </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <p:commandButton value="Buscar" style="font-size:19px; margin-right:20px;" process="@this form:tvDistribuidor:tbRegistrosDistribuidor" action="#{distribuidorBean.cargarDatosDistribuidor()}" update="dtDistribuidor" icon="pi pi-search" />
+                            </div>
+                        </div>
+                        <p:dataTable id="dtDistribuidor" var="distribuidor" value="#{distribuidorBean.listaDistribuidor}" emptyMessage="No se encontraron registros."
+                                     selectionMode="single" selection="#{distribuidorBean.seleccionDistribuidor}" rowKey="#{distribuidor.idDistribuidor}"
+                                     paginator="true" rows="10" sortMode="single" widgetVar="distribuidorTabla"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} Registros">
+                            <p:ajax event="rowSelect" listener="#{distribuidorBean.onRowSelect}" update=":form:tvDistribuidor"/>
+
+                            <p:column headerText="Código">
+                                <h:outputText value="#{distribuidor.idDistribuidor}" />
+                            </p:column>
+
+                            <p:column headerText="Clave" sortBy="#{distribuidor.clave}" filterBy="#{distribuidor.clave}">
+                                <h:outputText value="#{distribuidor.clave}" />
+                            </p:column>
+
+                            <p:column headerText="Nombre" sortBy="#{distribuidor.nombre}" filterBy="#{distribuidor.nombre}">
+                                <h:outputText value="#{distribuidor.nombre}" />
+                            </p:column>
+
+                            <p:column headerText="Estado" sortBy="#{distribuidor.estado}" filterBy="#{distribuidor.estado == true? 'Activo' : 'Inactivo'}">
+                                <h:outputText value="#{distribuidor.estado == true? 'Activo' : 'Inactivo'}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+                </p:tabView>
+                <p:dialog id="dialogoEliminar" widgetVar="wdialogo" header="Confirmar Eliminación" height="80" width="350">
+                    <p:commandButton value="Aceptar" ajax="false" action="#{distribuidorBean.eliminarDistribuidor()}" update=":form:tvTelefonia, :form:msgs" oncomplete="PF('wdialogo').hide();" style="font-size:19px;"/>
+                    <p:commandButton value="Cancelar" icon="ui-icon-close" immediate="true" onclick="PF('wdialogo').hide();" style="font-size:19px;"/>
+
+                </p:dialog>
+            </div>
+        </h:form>
+    </h:body>
+</html>
