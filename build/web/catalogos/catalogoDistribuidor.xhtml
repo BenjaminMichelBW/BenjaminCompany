@@ -23,7 +23,7 @@ and open the template in the editor.
                 <p:tabView id="tvDistribuidor">
                     <p:tab title="Panel" id="tabForm" >
 
-                        <p:commandButton value="Nuevo" style="font-size:19px;margin-right:20px;" action="#{distribuidorBean.nuevoDistribuidor()}" update=":form:tvDistribuidor" icon="pi pi-file-o" />
+                        <p:commandButton value="Nuevo" style="font-size:19px;margin-right:20px;" action="#{distribuidorBean.nuevoDistribuidor()}" update=":form:tvDistribuidor" icon="pi pi-file" />
                         <p:commandButton value="Guardar" type="Submit" style="font-size:19px;margin-right:20px;" action="#{distribuidorBean.guardarDistribuidor()}" update=":form:tvDistribuidor, :form:msgs" icon="pi pi-save"/>
                         <p:commandButton value="Eliminar" style="font-size:19px;margin-right:20px;" onclick="PF('wdialogo').show();" icon="pi pi-trash"/>
 

@@ -21,7 +21,7 @@ and open the template in the editor.
             <div class="card">
                 <p:tabView id="tvCliente" >
                     <p:tab title="Panel" id="tabForm" >
-                        <p:commandButton value="Nuevo" style="margin-right:20px; font-size:19px;" action="#{clienteBean.nuevoCliente()}" update=":form:tvCliente" icon="pi pi-file-o"/>
+                        <p:commandButton value="Nuevo" style="margin-right:20px; font-size:19px;" action="#{clienteBean.nuevoCliente()}" update=":form:tvCliente" icon="pi pi-file"/>
                         <p:commandButton value="Guardar" type="Submit" style="margin-right:20px;font-size:19px;" action="#{clienteBean.guardarCliente()}" update=":form:tvCliente, :form:msgs" icon="pi pi-save" />
                         <p:commandButton value="Eliminar" style="margin-right:20px;font-size:19px;" onclick="PF('wdialogo').show();" icon="pi pi-trash" />
 
