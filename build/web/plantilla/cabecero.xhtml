@@ -15,10 +15,10 @@ and open the template in the editor.
     </h:head>
     <h:body>
         <h:form>
-            <h:graphicImage value="/imagenes/leon.png" alt="logo" style="margin-left: 50px ;" width="70px"/>
-            <p:outputLabel style="float:right" value=" Hola, #{loginBean.nombreUsuario}" /><br/>
-            <p:outputLabel value=" BenjaminCompany" />
-            <p:commandButton value="Cerrar sesión" style="float:right; font-size:19px;" action="#{loginBean.cerrarSession()}" icon="fa fa-sign-out" />
+            <h:graphicImage value="/imagenes/leon.png" alt="logo" style="margin-left: 50px ;margin-top: 20px" width="70px"/>
+            <p:outputLabel style="float:right" value=" Hola, #{loginBean.nombreUsuario}"/><br/>
+            <p:outputLabel value=" BenjaminCompany" style="margin-right: 1rem" />
+            <p:commandButton value="Cerrar sesión" style="float:right; font-size:19px; margin-right: 1rem" action="#{loginBean.cerrarSession()}" icon="fa fa-sign-out" />
         </h:form>
     </h:body>
 </html>
