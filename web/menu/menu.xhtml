@@ -16,11 +16,19 @@ and open the template in the editor.
     </h:head>
     <h:body>
             <p:menu style="width: 190px">
-                <p:menuitem value=" Inicio" icon="pi pi-home" action="#{menuBean.seleccionMenu(1)}" update="panelCenter" style="font-size:19px;"/>
+                <p:menuitem action="#{menuBean.seleccionMenu(1)}" update="panelCenter" >
+                    <i class="pi pi-home" > Inicio</i>
+                </p:menuitem>
                 <p:submenu label="Catálogos">
-                    <p:menuitem value=" Clientes" icon="pi pi-users" action="#{menuBean.seleccionMenu(2)}" update="panelCenter" style="font-size:19px;"/>
-                    <p:menuitem value=" Distribuidores" icon="pi pi-briefcase" action="#{menuBean.seleccionMenu(3)}" update="panelCenter" style="font-size:19px;"/>
-                    <p:menuitem value=" Telefonía" icon="pi pi-id-card" action="#{menuBean.seleccionMenu(4)}" update="panelCenter" style="font-size:19px;"/>
+                    <p:menuitem action="#{menuBean.seleccionMenu(2)}" update="panelCenter" >
+                        <i class="pi pi-users"> Clientes</i>
+                    </p:menuitem>
+                    <p:menuitem action="#{menuBean.seleccionMenu(3)}" update="panelCenter" >
+                        <i class="pi pi-briefcase"> Distribuidores</i>
+                    </p:menuitem>
+                    <p:menuitem action="#{menuBean.seleccionMenu(4)}" update="panelCenter" >
+                        <i class="pi pi-id-card"> Telefonía</i>
+                    </p:menuitem>
                 </p:submenu>
             </p:menu>
     </h:body>
