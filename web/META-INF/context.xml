@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/BenjaminCompany">
     <Resource name="jdbc/activar" auth="Container"
-            type="javax.sql.DataSource" username="activa" password="activa"
-            driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver" 
-            url="jdbc:sqlserver://192.168.98.224;DatabaseName=ACTIVACION;"
-            maxActive="8" 
+              type="javax.sql.DataSource" username="activa" password="activa"
+              driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver" 
+              url="jdbc:sqlserver://192.168.98.224;DatabaseName=ACTIVACION;"
+              logAbandoned="true" removeAbandonedTimeout="60"
+              removeAbandonedOnBorrow="true" validationQuery="SELECT getdate()"
+              maxTotal="20" maxIdle="5" maxWaitMillis="5000" 
     />
 </Context>

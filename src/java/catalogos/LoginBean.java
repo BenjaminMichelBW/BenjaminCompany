@@ -56,7 +56,7 @@ public class LoginBean implements Serializable {
                     .getIdRespuesta() == 0) {
                 ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
                 String ctxPath = ((ServletContext) ctx.getContext()).getContextPath();
-                ctx.redirect(ctxPath + "/faces/plantilla/plantilla.xhtml");
+                ctx.redirect(ctxPath + "/plantilla/plantilla.xhtml");
             } else {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Datos no validos", "Favor de revisar que el usuario y la contraseña sean correctos");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -84,7 +84,7 @@ public class LoginBean implements Serializable {
             // si se usa una HttpServletResponse fallará.
             // Sin embargo, como ya está fuera del ciclo de vida 
             // de JSF se debe usar la ruta completa 
-            ctx.redirect(ctxPath + "/faces/login/login.xhtml");
+            ctx.redirect(ctxPath + "/login/login.xhtml");
         } catch (IOException ex) {
             Logger.getLogger(DistribuidorBean.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -101,7 +101,7 @@ public class LoginBean implements Serializable {
         String ctxPath = ((ServletContext) ctx.getContext()).getContextPath();
         try {
 
-            ctx.redirect(ctxPath + "/faces/login/login.xhtml");
+            ctx.redirect(ctxPath + "/login/login.xhtml");
         } catch (IOException ex) {
             Logger.getLogger(DistribuidorBean.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -160,9 +160,7 @@ public class LoginBean implements Serializable {
         this.inputPassword = inputPassword;
     }
 
-//</editor-fold>
-
-    /**
+        /**
      * @return the nombreUsuario
      */
     public String getNombreUsuario() {
@@ -175,4 +173,7 @@ public class LoginBean implements Serializable {
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
     }
+//</editor-fold>
+
+
 }
