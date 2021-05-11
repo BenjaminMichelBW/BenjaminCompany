@@ -7,16 +7,17 @@ package controller;
 
 import controller.exceptions.NonexistentEntityException;
 import controller.exceptions.PreexistingEntityException;
-import entidades.SPerfilesAccesos;
-import entidades.SPerfilesAccesosPK;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import entidades.SAccesos;
+import entidades.SPerfilesAccesos;
+import entidades.SPerfilesAccesosPK;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import utils.LocalEntityManagerFactory;
 
 /**
@@ -26,7 +27,7 @@ import utils.LocalEntityManagerFactory;
 public class SPerfilesAccesosJpaController implements Serializable {
 
     public SPerfilesAccesosJpaController() {
-         this.emf = LocalEntityManagerFactory.getEntityManagerFactory();
+        this.emf = LocalEntityManagerFactory.getEntityManagerFactory();
     }
     private EntityManagerFactory emf = null;
 
@@ -38,13 +39,22 @@ public class SPerfilesAccesosJpaController implements Serializable {
         if (SPerfilesAccesos.getSPerfilesAccesosPK() == null) {
             SPerfilesAccesos.setSPerfilesAccesosPK(new SPerfilesAccesosPK());
         }
-        SPerfilesAccesos.getSPerfilesAccesosPK().setIdPerfil(SPerfilesAccesos.getSPerfiles().getIdPerfil());
         SPerfilesAccesos.getSPerfilesAccesosPK().setIdAcceso(SPerfilesAccesos.getSAccesos().getIdAcceso());
+        SPerfilesAccesos.getSPerfilesAccesosPK().setIdPerfil(SPerfilesAccesos.getSPerfiles().getIdPerfil());
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            SAccesos SAccesos = SPerfilesAccesos.getSAccesos();
+            if (SAccesos != null) {
+                SAccesos = em.getReference(SAccesos.getClass(), SAccesos.getIdAcceso());
+                SPerfilesAccesos.setSAccesos(SAccesos);
+            }
             em.persist(SPerfilesAccesos);
+            if (SAccesos != null) {
+                SAccesos.getsPerfilesAccesosCollection().add(SPerfilesAccesos);
+                SAccesos = em.merge(SAccesos);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findSPerfilesAccesos(SPerfilesAccesos.getSPerfilesAccesosPK()) != null) {
@@ -59,13 +69,28 @@ public class SPerfilesAccesosJpaController implements Serializable {
     }
 
     public void edit(SPerfilesAccesos SPerfilesAccesos) throws NonexistentEntityException, Exception {
-        SPerfilesAccesos.getSPerfilesAccesosPK().setIdPerfil(SPerfilesAccesos.getSPerfiles().getIdPerfil());
         SPerfilesAccesos.getSPerfilesAccesosPK().setIdAcceso(SPerfilesAccesos.getSAccesos().getIdAcceso());
+        SPerfilesAccesos.getSPerfilesAccesosPK().setIdPerfil(SPerfilesAccesos.getSPerfiles().getIdPerfil());
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            SPerfilesAccesos persistentSPerfilesAccesos = em.find(SPerfilesAccesos.class, SPerfilesAccesos.getSPerfilesAccesosPK());
+            SAccesos SAccesosOld = persistentSPerfilesAccesos.getSAccesos();
+            SAccesos SAccesosNew = SPerfilesAccesos.getSAccesos();
+            if (SAccesosNew != null) {
+                SAccesosNew = em.getReference(SAccesosNew.getClass(), SAccesosNew.getIdAcceso());
+                SPerfilesAccesos.setSAccesos(SAccesosNew);
+            }
             SPerfilesAccesos = em.merge(SPerfilesAccesos);
+            if (SAccesosOld != null && !SAccesosOld.equals(SAccesosNew)) {
+                SAccesosOld.getsPerfilesAccesosCollection().remove(SPerfilesAccesos);
+                SAccesosOld = em.merge(SAccesosOld);
+            }
+            if (SAccesosNew != null && !SAccesosNew.equals(SAccesosOld)) {
+                SAccesosNew.getsPerfilesAccesosCollection().add(SPerfilesAccesos);
+                SAccesosNew = em.merge(SAccesosNew);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -94,6 +119,11 @@ public class SPerfilesAccesosJpaController implements Serializable {
                 SPerfilesAccesos.getSPerfilesAccesosPK();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The SPerfilesAccesos with id " + id + " no longer exists.", enfe);
+            }
+            SAccesos SAccesos = SPerfilesAccesos.getSAccesos();
+            if (SAccesos != null) {
+                SAccesos.getsPerfilesAccesosCollection().remove(SPerfilesAccesos);
+                SAccesos = em.merge(SAccesos);
             }
             em.remove(SPerfilesAccesos);
             em.getTransaction().commit();

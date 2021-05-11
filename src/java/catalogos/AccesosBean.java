@@ -70,6 +70,10 @@ public class AccesosBean {
         }
     }
 
+    /**
+     * Guarda un nuevo acceso o actualiza
+     * 
+     */
     public void guardarAccesos() {
         SAccesosJpaController modelo = new SAccesosJpaController();
         

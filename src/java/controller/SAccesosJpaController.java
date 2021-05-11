@@ -5,6 +5,7 @@
  */
 package controller;
 
+import controller.exceptions.IllegalOrphanException;
 import controller.exceptions.NonexistentEntityException;
 import entidades.SAccesos;
 import entidades.SAccesos_;
@@ -15,18 +16,19 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import entidades.SAplicaciones;
 import entidades.SPerfiles;
-import entidades.SPerfilesAccesos;
-import entidades.SPerfilesAccesosPK;
-import entidades.SPerfilesAccesosPK_;
-import entidades.SPerfilesAccesos_;
 import java.util.ArrayList;
 import java.util.Collection;
+import entidades.SPerfilesAccesos;
+import entidades.SPerfilesAccesos_;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CollectionJoin;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.JoinType;
 import utils.LocalEntityManagerFactory;
 
 /**
@@ -36,7 +38,7 @@ import utils.LocalEntityManagerFactory;
 public class SAccesosJpaController implements Serializable {
 
     public SAccesosJpaController() {
-         this.emf = LocalEntityManagerFactory.getEntityManagerFactory();
+        this.emf = LocalEntityManagerFactory.getEntityManagerFactory();
     }
     private EntityManagerFactory emf = null;
     private List<SAccesos> lista;
@@ -49,6 +51,12 @@ public class SAccesosJpaController implements Serializable {
         if (SAccesos.getSAplicacionesCollection() == null) {
             SAccesos.setSAplicacionesCollection(new ArrayList<SAplicaciones>());
         }
+        if (SAccesos.getsPerfilesAccesosCollection() == null) {
+            SAccesos.setsPerfilesAccesosCollection(new ArrayList<SPerfilesAccesos>());
+        }
+        if (SAccesos.getSPerfilesAccesosCollection() == null) {
+            SAccesos.setSPerfilesAccesosCollection(new ArrayList<SPerfilesAccesos>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -59,6 +67,18 @@ public class SAccesosJpaController implements Serializable {
                 attachedSAplicacionesCollection.add(SAplicacionesCollectionSAplicacionesToAttach);
             }
             SAccesos.setSAplicacionesCollection(attachedSAplicacionesCollection);
+            Collection<SPerfilesAccesos> attachedsPerfilesAccesosCollection = new ArrayList<SPerfilesAccesos>();
+            for (SPerfilesAccesos sPerfilesAccesosCollectionSPerfilesAccesosToAttach : SAccesos.getsPerfilesAccesosCollection()) {
+                sPerfilesAccesosCollectionSPerfilesAccesosToAttach = em.getReference(sPerfilesAccesosCollectionSPerfilesAccesosToAttach.getClass(), sPerfilesAccesosCollectionSPerfilesAccesosToAttach.getSPerfilesAccesosPK());
+                attachedsPerfilesAccesosCollection.add(sPerfilesAccesosCollectionSPerfilesAccesosToAttach);
+            }
+            SAccesos.setsPerfilesAccesosCollection(attachedsPerfilesAccesosCollection);
+            Collection<SPerfilesAccesos> attachedSPerfilesAccesosCollection = new ArrayList<SPerfilesAccesos>();
+            for (SPerfilesAccesos SPerfilesAccesosCollectionSPerfilesAccesosToAttach : SAccesos.getSPerfilesAccesosCollection()) {
+                SPerfilesAccesosCollectionSPerfilesAccesosToAttach = em.getReference(SPerfilesAccesosCollectionSPerfilesAccesosToAttach.getClass(), SPerfilesAccesosCollectionSPerfilesAccesosToAttach.getSPerfilesAccesosPK());
+                attachedSPerfilesAccesosCollection.add(SPerfilesAccesosCollectionSPerfilesAccesosToAttach);
+            }
+            SAccesos.setSPerfilesAccesosCollection(attachedSPerfilesAccesosCollection);
             em.persist(SAccesos);
             for (SAplicaciones SAplicacionesCollectionSAplicaciones : SAccesos.getSAplicacionesCollection()) {
                 SAccesos oldIdAccesoOfSAplicacionesCollectionSAplicaciones = SAplicacionesCollectionSAplicaciones.getIdAcceso();
@@ -69,6 +89,24 @@ public class SAccesosJpaController implements Serializable {
                     oldIdAccesoOfSAplicacionesCollectionSAplicaciones = em.merge(oldIdAccesoOfSAplicacionesCollectionSAplicaciones);
                 }
             }
+            for (SPerfilesAccesos sPerfilesAccesosCollectionSPerfilesAccesos : SAccesos.getsPerfilesAccesosCollection()) {
+                SAccesos oldSAccesosOfSPerfilesAccesosCollectionSPerfilesAccesos = sPerfilesAccesosCollectionSPerfilesAccesos.getSAccesos();
+                sPerfilesAccesosCollectionSPerfilesAccesos.setSAccesos(SAccesos);
+                sPerfilesAccesosCollectionSPerfilesAccesos = em.merge(sPerfilesAccesosCollectionSPerfilesAccesos);
+                if (oldSAccesosOfSPerfilesAccesosCollectionSPerfilesAccesos != null) {
+                    oldSAccesosOfSPerfilesAccesosCollectionSPerfilesAccesos.getsPerfilesAccesosCollection().remove(sPerfilesAccesosCollectionSPerfilesAccesos);
+                    oldSAccesosOfSPerfilesAccesosCollectionSPerfilesAccesos = em.merge(oldSAccesosOfSPerfilesAccesosCollectionSPerfilesAccesos);
+                }
+            }
+            for (SPerfilesAccesos SPerfilesAccesosCollectionSPerfilesAccesos : SAccesos.getSPerfilesAccesosCollection()) {
+                SAccesos oldSAccesosOfSPerfilesAccesosCollectionSPerfilesAccesos = SPerfilesAccesosCollectionSPerfilesAccesos.getSAccesos();
+                SPerfilesAccesosCollectionSPerfilesAccesos.setSAccesos(SAccesos);
+                SPerfilesAccesosCollectionSPerfilesAccesos = em.merge(SPerfilesAccesosCollectionSPerfilesAccesos);
+                if (oldSAccesosOfSPerfilesAccesosCollectionSPerfilesAccesos != null) {
+                    oldSAccesosOfSPerfilesAccesosCollectionSPerfilesAccesos.getSPerfilesAccesosCollection().remove(SPerfilesAccesosCollectionSPerfilesAccesos);
+                    oldSAccesosOfSPerfilesAccesosCollectionSPerfilesAccesos = em.merge(oldSAccesosOfSPerfilesAccesosCollectionSPerfilesAccesos);
+                }
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -77,7 +115,7 @@ public class SAccesosJpaController implements Serializable {
         }
     }
 
-    public void edit(SAccesos SAccesos) throws NonexistentEntityException, Exception {
+    public void edit(SAccesos SAccesos) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -85,6 +123,30 @@ public class SAccesosJpaController implements Serializable {
             SAccesos persistentSAccesos = em.find(SAccesos.class, SAccesos.getIdAcceso());
             Collection<SAplicaciones> SAplicacionesCollectionOld = persistentSAccesos.getSAplicacionesCollection();
             Collection<SAplicaciones> SAplicacionesCollectionNew = SAccesos.getSAplicacionesCollection();
+            Collection<SPerfilesAccesos> sPerfilesAccesosCollectionOld = persistentSAccesos.getsPerfilesAccesosCollection();
+            Collection<SPerfilesAccesos> sPerfilesAccesosCollectionNew = SAccesos.getsPerfilesAccesosCollection();
+            Collection<SPerfilesAccesos> SPerfilesAccesosCollectionOld = persistentSAccesos.getSPerfilesAccesosCollection();
+            Collection<SPerfilesAccesos> SPerfilesAccesosCollectionNew = SAccesos.getSPerfilesAccesosCollection();
+            List<String> illegalOrphanMessages = null;
+            for (SPerfilesAccesos sPerfilesAccesosCollectionOldSPerfilesAccesos : sPerfilesAccesosCollectionOld) {
+                if (!sPerfilesAccesosCollectionNew.contains(sPerfilesAccesosCollectionOldSPerfilesAccesos)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain SPerfilesAccesos " + sPerfilesAccesosCollectionOldSPerfilesAccesos + " since its SAccesos field is not nullable.");
+                }
+            }
+            for (SPerfilesAccesos SPerfilesAccesosCollectionOldSPerfilesAccesos : SPerfilesAccesosCollectionOld) {
+                if (!SPerfilesAccesosCollectionNew.contains(SPerfilesAccesosCollectionOldSPerfilesAccesos)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain SPerfilesAccesos " + SPerfilesAccesosCollectionOldSPerfilesAccesos + " since its SAccesos field is not nullable.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
             Collection<SAplicaciones> attachedSAplicacionesCollectionNew = new ArrayList<SAplicaciones>();
             for (SAplicaciones SAplicacionesCollectionNewSAplicacionesToAttach : SAplicacionesCollectionNew) {
                 SAplicacionesCollectionNewSAplicacionesToAttach = em.getReference(SAplicacionesCollectionNewSAplicacionesToAttach.getClass(), SAplicacionesCollectionNewSAplicacionesToAttach.getIdAplicacion());
@@ -92,6 +154,20 @@ public class SAccesosJpaController implements Serializable {
             }
             SAplicacionesCollectionNew = attachedSAplicacionesCollectionNew;
             SAccesos.setSAplicacionesCollection(SAplicacionesCollectionNew);
+            Collection<SPerfilesAccesos> attachedsPerfilesAccesosCollectionNew = new ArrayList<SPerfilesAccesos>();
+            for (SPerfilesAccesos sPerfilesAccesosCollectionNewSPerfilesAccesosToAttach : sPerfilesAccesosCollectionNew) {
+                sPerfilesAccesosCollectionNewSPerfilesAccesosToAttach = em.getReference(sPerfilesAccesosCollectionNewSPerfilesAccesosToAttach.getClass(), sPerfilesAccesosCollectionNewSPerfilesAccesosToAttach.getSPerfilesAccesosPK());
+                attachedsPerfilesAccesosCollectionNew.add(sPerfilesAccesosCollectionNewSPerfilesAccesosToAttach);
+            }
+            sPerfilesAccesosCollectionNew = attachedsPerfilesAccesosCollectionNew;
+            SAccesos.setsPerfilesAccesosCollection(sPerfilesAccesosCollectionNew);
+            Collection<SPerfilesAccesos> attachedSPerfilesAccesosCollectionNew = new ArrayList<SPerfilesAccesos>();
+            for (SPerfilesAccesos SPerfilesAccesosCollectionNewSPerfilesAccesosToAttach : SPerfilesAccesosCollectionNew) {
+                SPerfilesAccesosCollectionNewSPerfilesAccesosToAttach = em.getReference(SPerfilesAccesosCollectionNewSPerfilesAccesosToAttach.getClass(), SPerfilesAccesosCollectionNewSPerfilesAccesosToAttach.getSPerfilesAccesosPK());
+                attachedSPerfilesAccesosCollectionNew.add(SPerfilesAccesosCollectionNewSPerfilesAccesosToAttach);
+            }
+            SPerfilesAccesosCollectionNew = attachedSPerfilesAccesosCollectionNew;
+            SAccesos.setSPerfilesAccesosCollection(SPerfilesAccesosCollectionNew);
             SAccesos = em.merge(SAccesos);
             for (SAplicaciones SAplicacionesCollectionOldSAplicaciones : SAplicacionesCollectionOld) {
                 if (!SAplicacionesCollectionNew.contains(SAplicacionesCollectionOldSAplicaciones)) {
@@ -107,6 +183,28 @@ public class SAccesosJpaController implements Serializable {
                     if (oldIdAccesoOfSAplicacionesCollectionNewSAplicaciones != null && !oldIdAccesoOfSAplicacionesCollectionNewSAplicaciones.equals(SAccesos)) {
                         oldIdAccesoOfSAplicacionesCollectionNewSAplicaciones.getSAplicacionesCollection().remove(SAplicacionesCollectionNewSAplicaciones);
                         oldIdAccesoOfSAplicacionesCollectionNewSAplicaciones = em.merge(oldIdAccesoOfSAplicacionesCollectionNewSAplicaciones);
+                    }
+                }
+            }
+            for (SPerfilesAccesos sPerfilesAccesosCollectionNewSPerfilesAccesos : sPerfilesAccesosCollectionNew) {
+                if (!sPerfilesAccesosCollectionOld.contains(sPerfilesAccesosCollectionNewSPerfilesAccesos)) {
+                    SAccesos oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos = sPerfilesAccesosCollectionNewSPerfilesAccesos.getSAccesos();
+                    sPerfilesAccesosCollectionNewSPerfilesAccesos.setSAccesos(SAccesos);
+                    sPerfilesAccesosCollectionNewSPerfilesAccesos = em.merge(sPerfilesAccesosCollectionNewSPerfilesAccesos);
+                    if (oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos != null && !oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos.equals(SAccesos)) {
+                        oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos.getsPerfilesAccesosCollection().remove(sPerfilesAccesosCollectionNewSPerfilesAccesos);
+                        oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos = em.merge(oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos);
+                    }
+                }
+            }
+            for (SPerfilesAccesos SPerfilesAccesosCollectionNewSPerfilesAccesos : SPerfilesAccesosCollectionNew) {
+                if (!SPerfilesAccesosCollectionOld.contains(SPerfilesAccesosCollectionNewSPerfilesAccesos)) {
+                    SAccesos oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos = SPerfilesAccesosCollectionNewSPerfilesAccesos.getSAccesos();
+                    SPerfilesAccesosCollectionNewSPerfilesAccesos.setSAccesos(SAccesos);
+                    SPerfilesAccesosCollectionNewSPerfilesAccesos = em.merge(SPerfilesAccesosCollectionNewSPerfilesAccesos);
+                    if (oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos != null && !oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos.equals(SAccesos)) {
+                        oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos.getSPerfilesAccesosCollection().remove(SPerfilesAccesosCollectionNewSPerfilesAccesos);
+                        oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos = em.merge(oldSAccesosOfSPerfilesAccesosCollectionNewSPerfilesAccesos);
                     }
                 }
             }
@@ -127,7 +225,7 @@ public class SAccesosJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -138,6 +236,24 @@ public class SAccesosJpaController implements Serializable {
                 SAccesos.getIdAcceso();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The SAccesos with id " + id + " no longer exists.", enfe);
+            }
+            List<String> illegalOrphanMessages = null;
+            Collection<SPerfilesAccesos> sPerfilesAccesosCollectionOrphanCheck = SAccesos.getsPerfilesAccesosCollection();
+            for (SPerfilesAccesos sPerfilesAccesosCollectionOrphanCheckSPerfilesAccesos : sPerfilesAccesosCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This SAccesos (" + SAccesos + ") cannot be destroyed since the SPerfilesAccesos " + sPerfilesAccesosCollectionOrphanCheckSPerfilesAccesos + " in its sPerfilesAccesosCollection field has a non-nullable SAccesos field.");
+            }
+            Collection<SPerfilesAccesos> SPerfilesAccesosCollectionOrphanCheck = SAccesos.getSPerfilesAccesosCollection();
+            for (SPerfilesAccesos SPerfilesAccesosCollectionOrphanCheckSPerfilesAccesos : SPerfilesAccesosCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This SAccesos (" + SAccesos + ") cannot be destroyed since the SPerfilesAccesos " + SPerfilesAccesosCollectionOrphanCheckSPerfilesAccesos + " in its SPerfilesAccesosCollection field has a non-nullable SAccesos field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             Collection<SAplicaciones> SAplicacionesCollection = SAccesos.getSAplicacionesCollection();
             for (SAplicaciones SAplicacionesCollectionSAplicaciones : SAplicacionesCollection) {
@@ -199,45 +315,84 @@ public class SAccesosJpaController implements Serializable {
         }
     }
 
-    public List<SAccesos> traerAccesosActuales(SPerfiles idPerfil){
+    public List<SAccesos> traerAccesosActuales(SPerfiles idPerfil) {
         lista = new ArrayList<>();
         EntityManager em = getEntityManager();
-        try{
+        try {
             em = getEntityManager();
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<SAccesos> query = cb.createQuery(SAccesos.class);
             Root<SAccesos> perfil = query.from(SAccesos.class);
-            
-            /**
-             * este codigo marca error por eso no se pudo hacer jalar el pick list
-             * 
-             */
-            //CollectionJoin<SAccesos, SPerfilesAccesos> usuarioPerfil = perfil.join(SAccesos_.sAplicacionesCollection);
-            //query.select(perfil)
-              //     .where(cb.equal(usuarioPerfil.get(SPerfilesAccesos_.sPerfiles), idPerfil));
+            CollectionJoin<SAccesos, SPerfilesAccesos> usuarioPerfil = perfil.join(SAccesos_.sPerfilesAccesosCollection);
+            query.select(perfil)
+                    .where(cb.equal(usuarioPerfil.get(SPerfilesAccesos_.sPerfiles), idPerfil));
             TypedQuery<SAccesos> typedQuery = em.createQuery(query);
+            
             lista = typedQuery.getResultList();
         } catch (Exception ex) {
-
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (em != null) {
                 em.close();
             }
         }
         return lista;
-        
-        
     }
     
+    public List<SAccesos> traerAccesosDisponibles(SPerfiles idPerfil){
+        EntityManager em = getEntityManager();
+        lista = new ArrayList<>();
+        try {
+            em = getEntityManager();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<SAccesos> query = cb.createQuery(SAccesos.class);
+            Root<SAccesos> perfil = query.from(SAccesos.class);
+            CollectionJoin<SAccesos, SPerfilesAccesos> usuarioPerfil = perfil.join(SAccesos_.sPerfilesAccesosCollection, JoinType.LEFT);
+            usuarioPerfil.on(cb.equal(usuarioPerfil.get(SPerfilesAccesos_.sPerfiles), idPerfil));
+            query.select(perfil)
+                    .where(cb.isNull(usuarioPerfil.get(SPerfilesAccesos_.sPerfiles)));
+            TypedQuery<SAccesos> typedQuery = em.createQuery(query);
+
+            lista = typedQuery.getResultList();
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+        return lista;
+    }
     
-//<editor-fold defaultstate="collapsed" desc="Gets y Sets">
+    public List<SPerfilesAccesos> traerAccesosByPerfil(SPerfiles perfil) {
+        List<SPerfilesAccesos> listaAccesos = new ArrayList<>();
+        
+        if (perfil != null) {
+            //SELECT r FROM RPerfilAcceso r WHERE r.rPerfilAccesoPK.idPerfil = :idPerfil
+        EntityManager em = getEntityManager();
+        Query query = null;
+        try {
+
+            query = em.createNamedQuery("RPerfilAcceso.findByIdPerfil", SPerfilesAccesos.class).setParameter("idPerfil", perfil.getIdPerfil());
+
+            listaAccesos = query.getResultList();
+
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+}
+        }
+        
+        return listaAccesos;
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="Gets y Sets">
     /**
      * @return the lista
      */
     public List<SAccesos> getLista() {
         return lista;
     }
-    
+
     /**
      * @param lista the lista to set
      */
@@ -245,5 +400,5 @@ public class SAccesosJpaController implements Serializable {
         this.lista = lista;
     }
 //</editor-fold>
-    
+
 }
