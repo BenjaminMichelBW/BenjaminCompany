@@ -1,16 +1,13 @@
 package objetos;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 
 /**
  *
  * @author Benjamin Michel 
  * 20121-04-16
  */
-@ManagedBean
-@ViewScoped
+
 public class Distribuidor implements Serializable {
 
     private int idDistribuidor;

@@ -1,8 +1,7 @@
 package objetos;
 
 import java.io.Serializable;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+
 
 /**
  *
@@ -10,8 +9,6 @@ import javax.faces.bean.ViewScoped;
  * 2021-04-15
  */
 
-@ManagedBean
-@ViewScoped
 public class Usuario implements Serializable {
     private int idUsuario;
     private String usuario;

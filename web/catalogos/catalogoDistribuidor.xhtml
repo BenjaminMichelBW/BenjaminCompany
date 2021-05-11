@@ -105,7 +105,7 @@ and open the template in the editor.
                     </p:tab>
                 </p:tabView>
                 <p:dialog id="dialogoEliminar" widgetVar="wdialogo" header="Confirmar Eliminación" height="80" width="350">
-                    <p:commandButton value="Aceptar" ajax="false" action="#{distribuidorBean.eliminarDistribuidor()}" update=":form:tvTelefonia, :form:msgs" oncomplete="PF('wdialogo').hide();" style="font-size:19px;"/>
+                    <p:commandButton value="Aceptar" ajax="false" action="#{distribuidorBean.eliminarDistribuidor()}" update=":form:tvDistribuidor, :form:msgs" oncomplete="PF('wdialogo').hide();" style="font-size:19px;"/>
                     <p:commandButton value="Cancelar" icon="ui-icon-close" immediate="true" onclick="PF('wdialogo').hide();" style="font-size:19px;"/>
 
                 </p:dialog>
