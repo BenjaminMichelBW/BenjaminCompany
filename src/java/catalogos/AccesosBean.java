@@ -37,8 +37,8 @@ public class AccesosBean {
      */
     public void cargarDatosAccesos() {
         try {
-            SAccesosJpaController modelo = new SAccesosJpaController();
-            listaAccesos = modelo.findSAccesosEntities();
+            SAccesosJpaController sAccesosJpa = new SAccesosJpaController();
+            listaAccesos = sAccesosJpa.findSAccesosEntities();
         } catch (Exception ex) {
             Logger.getLogger(DistribuidorBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -75,7 +75,7 @@ public class AccesosBean {
      * 
      */
     public void guardarAccesos() {
-        SAccesosJpaController modelo = new SAccesosJpaController();
+        SAccesosJpaController sAccesosJpa = new SAccesosJpaController();
         
         Date fechaActual = new Date();
         accesos.setActivo(true);
@@ -83,11 +83,11 @@ public class AccesosBean {
 
         try {
             if (accesos.getIdAcceso() == null) {
-                modelo.create(accesos);
+                sAccesosJpa.create(accesos);
 
             } else {
                 
-                modelo.edit(accesos);
+                sAccesosJpa.edit(accesos);
             }
             nuevoAcceso();
             cargarDatosAccesos();
@@ -96,6 +96,8 @@ public class AccesosBean {
 
         } catch (Exception ex) {
             Logger.getLogger(DistribuidorBean.class.getName()).log(Level.SEVERE, null, ex);
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Guardar", "Se produjo un error");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
     }
@@ -104,14 +106,16 @@ public class AccesosBean {
      * 
      */
     public void eliminarAcceso(){
-        SAccesosJpaController modelo = new SAccesosJpaController();
+        SAccesosJpaController sAccesosJpa = new SAccesosJpaController();
         try{
-            modelo.destroy(accesos.getIdAcceso());
+            sAccesosJpa.destroy(accesos.getIdAcceso());
             nuevoAcceso();
             cargarDatosAccesos();
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Eliminar", "Se eliminó correctamente");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }catch (Exception ex) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Eliminar", "Se produjo un error");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
             Logger.getLogger(DistribuidorBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         

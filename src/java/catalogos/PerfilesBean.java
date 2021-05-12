@@ -51,8 +51,8 @@ public class PerfilesBean {
      */
     public void plCargarPerfilesAccesos() {
         try {
-            SAccesosJpaController modelo = new SAccesosJpaController();
-            listaAccesosDisponibles = modelo.findSAccesosEntities();
+            SAccesosJpaController sAccesosJpa = new SAccesosJpaController();
+            listaAccesosDisponibles = sAccesosJpa.findSAccesosEntities();
             listaAccesosActuales = new ArrayList<>();
             plAccesos = new DualListModel<SAccesos>(listaAccesosDisponibles, listaAccesosActuales);
 
@@ -68,8 +68,8 @@ public class PerfilesBean {
      */
     public void cargarDatosPerfiles() {
         try {
-            SPerfilesJpaController modelo = new SPerfilesJpaController();
-            listaPerfiles = modelo.findSPerfilesEntities();
+            SPerfilesJpaController sPerfilesJpa = new SPerfilesJpaController();
+            listaPerfiles = sPerfilesJpa.findSPerfilesEntities();
 
         } catch (Exception ex) {
             Logger.getLogger(DistribuidorBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -90,10 +90,10 @@ public class PerfilesBean {
             listaAccesosDisponibles = new ArrayList<>();
             listaAccesosActuales = new ArrayList<>();
 
-            SAccesosJpaController modelo = new SAccesosJpaController();
+            SAccesosJpaController sAccesosJpa = new SAccesosJpaController();
 
-            listaAccesosActuales = modelo.traerAccesosActuales(perfiles);
-            listaAccesosDisponibles = modelo.traerAccesosDisponibles(perfiles);
+            listaAccesosActuales = sAccesosJpa.traerAccesosActuales(perfiles);
+            listaAccesosDisponibles = sAccesosJpa.traerAccesosDisponibles(perfiles);
             plAccesos = new DualListModel<>(listaAccesosDisponibles, listaAccesosActuales);
         } catch (Exception ex) {
             Logger.getLogger(DistribuidorBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -119,9 +119,9 @@ public class PerfilesBean {
      *
      */
     public void guardarPerfiles() {
-        SPerfilesJpaController modelo = new SPerfilesJpaController();
-        SPerfilesAccesosJpaController modelo1 = new SPerfilesAccesosJpaController();
-        SAccesosJpaController modelo2 = new SAccesosJpaController();
+        SPerfilesJpaController sPerfilesJpa = new SPerfilesJpaController();
+        SPerfilesAccesosJpaController sPerfilesAccesosJpa = new SPerfilesAccesosJpaController();
+        SAccesosJpaController sAccesosJpa = new SAccesosJpaController();
         Date fechaActual = new Date();
         int usuarioSesion = TraeDatoSesion.traerIdUsuario();
 
@@ -132,23 +132,23 @@ public class PerfilesBean {
 
         try {
             if (perfiles.getIdPerfil() == null) {
-                modelo.create(perfiles);
+                sPerfilesJpa.create(perfiles);
 
                 for (Object accPer : plAccesos.getTarget()) {
-                    SAccesos acceso = modelo2.findSAccesos(Integer.parseInt(accPer.toString()));
+                    SAccesos acceso = sAccesosJpa.findSAccesos(Integer.parseInt(accPer.toString()));
                     perfilesAccesos.setSPerfiles(perfiles);
                     perfilesAccesos.setSAccesos(acceso);
                     perfilesAccesos.setFechaServidor(fechaActual);
                     perfilesAccesos.setIdUsuarioModifica(usuarioSesion);
-                    modelo1.create(perfilesAccesos);
+                    sPerfilesAccesosJpa.create(perfilesAccesos);
                 }
 
             } else {
 
-                modelo.edit(perfiles);
+                sPerfilesJpa.edit(perfiles);
 
                 List<SPerfilesAccesos> listaPerfilesAccesos = new ArrayList<>();
-                listaPerfilesAccesos = modelo2.traerAccesosByPerfil(perfiles);
+                listaPerfilesAccesos = sAccesosJpa.traerAccesosByPerfil(perfiles);
 
                 for (int i = 0; i < listaPerfilesAccesos.size(); i++) {
 
@@ -157,16 +157,16 @@ public class PerfilesBean {
                     perfilesAcceso.setIdAcceso(listaPerfilesAccesos.get(i).getSPerfilesAccesosPK().getIdAcceso());
                     perfilesAcceso.setIdPerfil(perfiles.getIdPerfil());
 
-                    modelo1.destroy(perfilesAcceso);
+                    sPerfilesAccesosJpa.destroy(perfilesAcceso);
                 }
 
                 for (Object accPer : plAccesos.getTarget()) {
-                    SAccesos acceso = modelo2.findSAccesos(Integer.parseInt(accPer.toString()));
+                    SAccesos acceso = sAccesosJpa.findSAccesos(Integer.parseInt(accPer.toString()));
                     perfilesAccesos.setSPerfiles(perfiles);
                     perfilesAccesos.setSAccesos(acceso);
                     perfilesAccesos.setFechaServidor(fechaActual);
                     perfilesAccesos.setIdUsuarioModifica(usuarioSesion);
-                    modelo1.create(perfilesAccesos);
+                    sPerfilesAccesosJpa.create(perfilesAccesos);
                 }
 
             }
@@ -176,7 +176,7 @@ public class PerfilesBean {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Guardar", "Se guardó correctamente");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (Exception ex) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Guardar", "Algo salio mal");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Guardar", "Se produjo un error");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             Logger.getLogger(DistribuidorBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -187,12 +187,12 @@ public class PerfilesBean {
      *
      */
     public void eliminarPerfil() {
-        SPerfilesJpaController modelo = new SPerfilesJpaController();
-        SPerfilesAccesosJpaController modelo1 = new SPerfilesAccesosJpaController();
-        SAccesosJpaController modelo2 = new SAccesosJpaController();
+        SPerfilesJpaController sPerfilesJpa = new SPerfilesJpaController();
+        SPerfilesAccesosJpaController sPerfilesAccesosJpa = new SPerfilesAccesosJpaController();
+        SAccesosJpaController sAccesosJpa = new SAccesosJpaController();
         try {
             List<SPerfilesAccesos> listaPerfilesAccesos = new ArrayList<>();
-            listaPerfilesAccesos = modelo2.traerAccesosByPerfil(perfiles);
+            listaPerfilesAccesos = sAccesosJpa.traerAccesosByPerfil(perfiles);
 
             for (int i = 0; i < listaPerfilesAccesos.size(); i++) {
 
@@ -201,16 +201,18 @@ public class PerfilesBean {
                 perfilesAcceso.setIdAcceso(listaPerfilesAccesos.get(i).getSPerfilesAccesosPK().getIdAcceso());
                 perfilesAcceso.setIdPerfil(perfiles.getIdPerfil());
 
-                modelo1.destroy(perfilesAcceso);
+                sPerfilesAccesosJpa.destroy(perfilesAcceso);
             }
 
-            modelo.destroy(perfiles.getIdPerfil());
+            sPerfilesJpa.destroy(perfiles.getIdPerfil());
             nuevoPerfil();
             cargarDatosPerfiles();
             plCargarPerfilesAccesos();
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Eliminar", "Se eliminó correctamente");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (Exception ex) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Eliminar", "Se produjo un error");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
             Logger.getLogger(DistribuidorBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
