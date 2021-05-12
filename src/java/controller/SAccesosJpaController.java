@@ -315,6 +315,12 @@ public class SAccesosJpaController implements Serializable {
         }
     }
 
+    /**
+     * Trae un listado de los accesos que tiene un perfil 
+     * 
+     * @param idPerfil
+     * @return 
+     */
     public List<SAccesos> traerAccesosActuales(SPerfiles idPerfil) {
         lista = new ArrayList<>();
         EntityManager em = getEntityManager();
@@ -339,6 +345,12 @@ public class SAccesosJpaController implements Serializable {
         return lista;
     }
     
+    /**
+     * Trae un listado de los accesos que aun no tiene el perfil pero que se pueden asignar
+     * 
+     * @param idPerfil
+     * @return 
+     */
     public List<SAccesos> traerAccesosDisponibles(SPerfiles idPerfil){
         EntityManager em = getEntityManager();
         lista = new ArrayList<>();
@@ -364,6 +376,12 @@ public class SAccesosJpaController implements Serializable {
         return lista;
     }
     
+    /**
+     * Trae un listado de los accesos que tiene el perfil pero lo busca por id del perfil
+     * 
+     * @param perfil
+     * @return 
+     */
     public List<SPerfilesAccesos> traerAccesosByPerfil(SPerfiles perfil) {
         List<SPerfilesAccesos> listaAccesos = new ArrayList<>();
         

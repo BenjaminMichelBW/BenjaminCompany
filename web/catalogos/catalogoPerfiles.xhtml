@@ -21,7 +21,9 @@ and open the template in the editor.
             <div class="card">
                 <p:tabView id="tvPerfiles">
                     <p:tab title="Panel" id="tabForm" >
-                        <p:commandButton value="Nuevo" style="font-size:19px;margin-right:20px;" action="#{perfilesBean.nuevoPerfil()}" update=":form:tvPerfiles" icon="pi pi-file" />
+                        <p:commandButton value="Nuevo" style="font-size:19px;margin-right:20px;" action="#{perfilesBean.nuevoPerfil()}"  update=":form:tvPerfiles" icon="pi pi-file">
+                            <p:ajax process="tabForm"  />
+                        </p:commandButton>
                         <p:commandButton value="Guardar" type="Submit" style="font-size:19px;margin-right:20px;" action="#{perfilesBean.guardarPerfiles()}" update=":form:tvPerfiles, :form:msgs" icon="pi pi-save"/>
                         <p:commandButton value="Eliminar" style="font-size:19px;margin-right:20px;" onclick="PF('wdialogo').show();" icon="pi pi-trash"/>
                         <br/><br/>
@@ -29,13 +31,13 @@ and open the template in the editor.
                         <div class="ui-g" >
                             <div class="ui-g-12 ui-md-6 ui-lg-3">
                                 <span class="ui-float-label">
-                                    <p:inputText id="nombrePerfil" value="#{perfilesBean.perfiles.nombrePerfil}" required="true" requiredMessage="Se requiere un nombre" maxlength="100"/>
-                                    <p:outputLabel for="nombrePerfil" value="Nombre"/>
+                                    <p:inputText id="nombrePerfil" value="#{perfilesBean.perfiles.nombrePerfil}" maxlength="100"/>
+                                    <p:outputLabel for="nombrePerfil" value="Nombre *"/>
                                 </span>
                             </div>
                             <div class="ui-g-12 ui-md-6 ui-lg-3">
                                 <span class="ui-float-label">
-                                    <p:inputText id="descripcionPerfil" value="#{perfilesBean.perfiles.descripcion}" required="true" requiredMessage="Se requiere una descripción"/>
+                                    <p:inputText id="descripcionPerfil" value="#{perfilesBean.perfiles.descripcion}" maxlength="100"/>
                                     <p:outputLabel for="descripcionPerfil" value="Descripción"/>
                                 </span>
                             </div>

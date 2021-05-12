@@ -119,34 +119,91 @@ public class PerfilesBean {
      *
      */
     public void guardarPerfiles() {
-        SPerfilesJpaController sPerfilesJpa = new SPerfilesJpaController();
-        SPerfilesAccesosJpaController sPerfilesAccesosJpa = new SPerfilesAccesosJpaController();
-        SAccesosJpaController sAccesosJpa = new SAccesosJpaController();
-        Date fechaActual = new Date();
-        int usuarioSesion = TraeDatoSesion.traerIdUsuario();
 
-        perfiles.setFechaAlta(fechaActual);
-        perfiles.setFechaServidor(fechaActual);
-        perfiles.setActivo(true);
-        perfiles.setIdUsuarioModifica(usuarioSesion);
+        if (perfiles.getNombrePerfil().equals("")) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Requiere", "Se requiere el campo Nombre.");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            plCargarPerfilesAccesos();
+        } else {
+            SPerfilesJpaController sPerfilesJpa = new SPerfilesJpaController();
+            SPerfilesAccesosJpaController sPerfilesAccesosJpa = new SPerfilesAccesosJpaController();
+            SAccesosJpaController sAccesosJpa = new SAccesosJpaController();
+            Date fechaActual = new Date();
+            int usuarioSesion = TraeDatoSesion.traerIdUsuario();
 
-        try {
-            if (perfiles.getIdPerfil() == null) {
-                sPerfilesJpa.create(perfiles);
+            perfiles.setFechaAlta(fechaActual);
+            perfiles.setFechaServidor(fechaActual);
+            perfiles.setActivo(true);
+            perfiles.setIdUsuarioModifica(usuarioSesion);
 
-                for (Object accPer : plAccesos.getTarget()) {
-                    SAccesos acceso = sAccesosJpa.findSAccesos(Integer.parseInt(accPer.toString()));
-                    perfilesAccesos.setSPerfiles(perfiles);
-                    perfilesAccesos.setSAccesos(acceso);
-                    perfilesAccesos.setFechaServidor(fechaActual);
-                    perfilesAccesos.setIdUsuarioModifica(usuarioSesion);
-                    sPerfilesAccesosJpa.create(perfilesAccesos);
+            try {
+                if (perfiles.getIdPerfil() == null) {
+                    sPerfilesJpa.create(perfiles);
+
+                    for (Object accPer : plAccesos.getTarget()) {
+                        SAccesos acceso = sAccesosJpa.findSAccesos(Integer.parseInt(accPer.toString()));
+                        perfilesAccesos.setSPerfiles(perfiles);
+                        perfilesAccesos.setSAccesos(acceso);
+                        perfilesAccesos.setFechaServidor(fechaActual);
+                        perfilesAccesos.setIdUsuarioModifica(usuarioSesion);
+                        sPerfilesAccesosJpa.create(perfilesAccesos);
+                    }
+
+                } else {
+
+                    sPerfilesJpa.edit(perfiles);
+
+                    List<SPerfilesAccesos> listaPerfilesAccesos = new ArrayList<>();
+                    listaPerfilesAccesos = sAccesosJpa.traerAccesosByPerfil(perfiles);
+
+                    for (int i = 0; i < listaPerfilesAccesos.size(); i++) {
+
+                        SPerfilesAccesosPK perfilesAcceso = new SPerfilesAccesosPK();
+
+                        perfilesAcceso.setIdAcceso(listaPerfilesAccesos.get(i).getSPerfilesAccesosPK().getIdAcceso());
+                        perfilesAcceso.setIdPerfil(perfiles.getIdPerfil());
+
+                        sPerfilesAccesosJpa.destroy(perfilesAcceso);
+                    }
+
+                    for (Object accPer : plAccesos.getTarget()) {
+                        SAccesos acceso = sAccesosJpa.findSAccesos(Integer.parseInt(accPer.toString()));
+                        perfilesAccesos.setSPerfiles(perfiles);
+                        perfilesAccesos.setSAccesos(acceso);
+                        perfilesAccesos.setFechaServidor(fechaActual);
+                        perfilesAccesos.setIdUsuarioModifica(usuarioSesion);
+                        sPerfilesAccesosJpa.create(perfilesAccesos);
+                    }
+
                 }
+                nuevoPerfil();
+                cargarDatosPerfiles();
+                plCargarPerfilesAccesos();
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Guardar", "Se guardó correctamente");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            } catch (Exception ex) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Guardar", "Se produjo un error");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                Logger.getLogger(DistribuidorBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
-            } else {
+    }
 
-                sPerfilesJpa.edit(perfiles);
-
+    /**
+     * Elimina un perfil y tambien elimina los datos de perfilAcceso
+     *
+     */
+    public void eliminarPerfil() {
+        if (perfiles.getIdPerfil() == null) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Requiere", "Se requiere tener un registro seleccionado");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            plCargarPerfilesAccesos();
+        } else {
+            SPerfilesJpaController sPerfilesJpa = new SPerfilesJpaController();
+            SPerfilesAccesosJpaController sPerfilesAccesosJpa = new SPerfilesAccesosJpaController();
+            SAccesosJpaController sAccesosJpa = new SAccesosJpaController();
+            try {
                 List<SPerfilesAccesos> listaPerfilesAccesos = new ArrayList<>();
                 listaPerfilesAccesos = sAccesosJpa.traerAccesosByPerfil(perfiles);
 
@@ -160,60 +217,17 @@ public class PerfilesBean {
                     sPerfilesAccesosJpa.destroy(perfilesAcceso);
                 }
 
-                for (Object accPer : plAccesos.getTarget()) {
-                    SAccesos acceso = sAccesosJpa.findSAccesos(Integer.parseInt(accPer.toString()));
-                    perfilesAccesos.setSPerfiles(perfiles);
-                    perfilesAccesos.setSAccesos(acceso);
-                    perfilesAccesos.setFechaServidor(fechaActual);
-                    perfilesAccesos.setIdUsuarioModifica(usuarioSesion);
-                    sPerfilesAccesosJpa.create(perfilesAccesos);
-                }
-
+                sPerfilesJpa.destroy(perfiles.getIdPerfil());
+                nuevoPerfil();
+                cargarDatosPerfiles();
+                plCargarPerfilesAccesos();
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Eliminar", "Se eliminó correctamente");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            } catch (Exception ex) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Eliminar", "Se produjo un error");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                Logger.getLogger(DistribuidorBean.class.getName()).log(Level.SEVERE, null, ex);
             }
-            nuevoPerfil();
-            cargarDatosPerfiles();
-            plCargarPerfilesAccesos();
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Guardar", "Se guardó correctamente");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } catch (Exception ex) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Guardar", "Se produjo un error");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            Logger.getLogger(DistribuidorBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    /**
-     * Elimina un perfil y tambien elimina los datos de perfilAcceso
-     *
-     */
-    public void eliminarPerfil() {
-        SPerfilesJpaController sPerfilesJpa = new SPerfilesJpaController();
-        SPerfilesAccesosJpaController sPerfilesAccesosJpa = new SPerfilesAccesosJpaController();
-        SAccesosJpaController sAccesosJpa = new SAccesosJpaController();
-        try {
-            List<SPerfilesAccesos> listaPerfilesAccesos = new ArrayList<>();
-            listaPerfilesAccesos = sAccesosJpa.traerAccesosByPerfil(perfiles);
-
-            for (int i = 0; i < listaPerfilesAccesos.size(); i++) {
-
-                SPerfilesAccesosPK perfilesAcceso = new SPerfilesAccesosPK();
-
-                perfilesAcceso.setIdAcceso(listaPerfilesAccesos.get(i).getSPerfilesAccesosPK().getIdAcceso());
-                perfilesAcceso.setIdPerfil(perfiles.getIdPerfil());
-
-                sPerfilesAccesosJpa.destroy(perfilesAcceso);
-            }
-
-            sPerfilesJpa.destroy(perfiles.getIdPerfil());
-            nuevoPerfil();
-            cargarDatosPerfiles();
-            plCargarPerfilesAccesos();
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Eliminar", "Se eliminó correctamente");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } catch (Exception ex) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Eliminar", "Se produjo un error");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            Logger.getLogger(DistribuidorBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
