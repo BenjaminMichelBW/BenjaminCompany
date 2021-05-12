@@ -1,4 +1,3 @@
-
 package catalogos;
 
 import controller.SAccesosJpaController;
@@ -23,8 +22,7 @@ import utils.TraeDatoSesion;
 
 /**
  *
- * @author Benjamin Michel 
- * 2021-05-07
+ * @author Benjamin Michel 2021-05-07
  */
 @ManagedBean
 @ApplicationScoped
@@ -49,7 +47,7 @@ public class PerfilesBean {
 
     /**
      * Al cargar la pagina carga los datos del picklist
-     * 
+     *
      */
     public void plCargarPerfilesAccesos() {
         try {
@@ -66,7 +64,7 @@ public class PerfilesBean {
 
     /**
      * Al cargar la pagina carga los datos de la tabla
-     * 
+     *
      */
     public void cargarDatosPerfiles() {
         try {
@@ -79,10 +77,10 @@ public class PerfilesBean {
     }
 
     /**
-     * Evento de seleccion en la tabla carga los datos al picklis del registro seleccionado
-     * y asigna a los campos los valores del registro seleccionado
-     * 
-     * @param event 
+     * Evento de seleccion en la tabla carga los datos al picklis del registro
+     * seleccionado y asigna a los campos los valores del registro seleccionado
+     *
+     * @param event
      */
     public void onRowSelect(SelectEvent<SPerfiles> event) {
         try {
@@ -104,7 +102,7 @@ public class PerfilesBean {
 
     /**
      * Limpia los campos y carga los datos por defecto del picklist
-     * 
+     *
      */
     public void nuevoPerfil() {
         try {
@@ -116,9 +114,9 @@ public class PerfilesBean {
     }
 
     /**
-     * Guarda o actualiza un perfil ademas de que guarda los elementos del target
-     * en la tabla perfilesAccesos
-     * 
+     * Guarda o actualiza un perfil ademas de que guarda los elementos del
+     * target en la tabla perfilesAccesos
+     *
      */
     public void guardarPerfiles() {
         SPerfilesJpaController modelo = new SPerfilesJpaController();
@@ -149,32 +147,17 @@ public class PerfilesBean {
 
                 modelo.edit(perfiles);
 
-                for (Object accPerSouId : plAccesos.getSource()) {
-                    try {
-                        SPerfilesAccesosPK perfilesAcceso = new SPerfilesAccesosPK();
+                List<SPerfilesAccesos> listaPerfilesAccesos = new ArrayList<>();
+                listaPerfilesAccesos = modelo2.traerAccesosByPerfil(perfiles);
 
-                        perfilesAcceso.setIdAcceso(Integer.parseInt(accPerSouId.toString()));
-                        perfilesAcceso.setIdPerfil(perfiles.getIdPerfil());
+                for (int i = 0; i < listaPerfilesAccesos.size(); i++) {
 
-                        modelo1.destroy(perfilesAcceso);
-                    } catch (Exception ex) {
+                    SPerfilesAccesosPK perfilesAcceso = new SPerfilesAccesosPK();
 
-                    }
+                    perfilesAcceso.setIdAcceso(listaPerfilesAccesos.get(i).getSPerfilesAccesosPK().getIdAcceso());
+                    perfilesAcceso.setIdPerfil(perfiles.getIdPerfil());
 
-                }
-
-                for (Object accPerTarId : plAccesos.getTarget()) {
-                    try {
-                        SPerfilesAccesosPK perfilesAcceso = new SPerfilesAccesosPK();
-
-                        perfilesAcceso.setIdAcceso(Integer.parseInt(accPerTarId.toString()));
-                        perfilesAcceso.setIdPerfil(perfiles.getIdPerfil());
-
-                        modelo1.destroy(perfilesAcceso);
-                    } catch (Exception ex) {
-
-                    }
-
+                    modelo1.destroy(perfilesAcceso);
                 }
 
                 for (Object accPer : plAccesos.getTarget()) {
@@ -201,41 +184,26 @@ public class PerfilesBean {
 
     /**
      * Elimina un perfil y tambien elimina los datos de perfilAcceso
-     * 
+     *
      */
     public void eliminarPerfil() {
         SPerfilesJpaController modelo = new SPerfilesJpaController();
         SPerfilesAccesosJpaController modelo1 = new SPerfilesAccesosJpaController();
+        SAccesosJpaController modelo2 = new SAccesosJpaController();
         try {
-            
-            for (Object accPerSouId : plAccesos.getSource()) {
-                    try {
-                        SPerfilesAccesosPK perfilesAcceso = new SPerfilesAccesosPK();
+            List<SPerfilesAccesos> listaPerfilesAccesos = new ArrayList<>();
+            listaPerfilesAccesos = modelo2.traerAccesosByPerfil(perfiles);
 
-                        perfilesAcceso.setIdAcceso(Integer.parseInt(accPerSouId.toString()));
-                        perfilesAcceso.setIdPerfil(perfiles.getIdPerfil());
+            for (int i = 0; i < listaPerfilesAccesos.size(); i++) {
 
-                        modelo1.destroy(perfilesAcceso);
-                    } catch (Exception ex) {
+                SPerfilesAccesosPK perfilesAcceso = new SPerfilesAccesosPK();
 
-                    }
+                perfilesAcceso.setIdAcceso(listaPerfilesAccesos.get(i).getSPerfilesAccesosPK().getIdAcceso());
+                perfilesAcceso.setIdPerfil(perfiles.getIdPerfil());
 
-                }
+                modelo1.destroy(perfilesAcceso);
+            }
 
-                for (Object accPerTarId : plAccesos.getTarget()) {
-                    try {
-                        SPerfilesAccesosPK perfilesAcceso = new SPerfilesAccesosPK();
-
-                        perfilesAcceso.setIdAcceso(Integer.parseInt(accPerTarId.toString()));
-                        perfilesAcceso.setIdPerfil(perfiles.getIdPerfil());
-
-                        modelo1.destroy(perfilesAcceso);
-                    } catch (Exception ex) {
-
-                    }
-
-                }
-            
             modelo.destroy(perfiles.getIdPerfil());
             nuevoPerfil();
             cargarDatosPerfiles();
