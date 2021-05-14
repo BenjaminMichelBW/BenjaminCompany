@@ -3,11 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/entidades/SPerfilesAccesos.java</file>
+            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/catalogos/ReporteBean.java</file>
             <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/catalogos/AccesosBean.java</file>
-            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/controller/SAccesosJpaController.java</file>
-            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/controller/SPerfilesAccesosJpaController.java</file>
+            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/catalogos/ClienteBean.java</file>
             <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/catalogos/PerfilesBean.java</file>
+            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/controller/CClientesJpaController.java</file>
+            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/web/reporte/reporte.xhtml</file>
         </group>
     </open-files>
 </project-private>

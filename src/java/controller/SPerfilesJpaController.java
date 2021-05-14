@@ -8,13 +8,16 @@ package controller;
 import controller.exceptions.NonexistentEntityException;
 import entidades.SPerfiles;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import entidades.SUsuarios;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import utils.LocalEntityManagerFactory;
 
 /**
@@ -24,7 +27,7 @@ import utils.LocalEntityManagerFactory;
 public class SPerfilesJpaController implements Serializable {
 
     public SPerfilesJpaController() {
-         this.emf = LocalEntityManagerFactory.getEntityManagerFactory();
+        this.emf = LocalEntityManagerFactory.getEntityManagerFactory();
     }
     private EntityManagerFactory emf = null;
 
@@ -33,11 +36,29 @@ public class SPerfilesJpaController implements Serializable {
     }
 
     public void create(SPerfiles SPerfiles) {
+        if (SPerfiles.getSUsuariosCollection() == null) {
+            SPerfiles.setSUsuariosCollection(new ArrayList<SUsuarios>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Collection<SUsuarios> attachedSUsuariosCollection = new ArrayList<SUsuarios>();
+            for (SUsuarios SUsuariosCollectionSUsuariosToAttach : SPerfiles.getSUsuariosCollection()) {
+                SUsuariosCollectionSUsuariosToAttach = em.getReference(SUsuariosCollectionSUsuariosToAttach.getClass(), SUsuariosCollectionSUsuariosToAttach.getIdUsuario());
+                attachedSUsuariosCollection.add(SUsuariosCollectionSUsuariosToAttach);
+            }
+            SPerfiles.setSUsuariosCollection(attachedSUsuariosCollection);
             em.persist(SPerfiles);
+            for (SUsuarios SUsuariosCollectionSUsuarios : SPerfiles.getSUsuariosCollection()) {
+                SPerfiles oldIdPerfilOfSUsuariosCollectionSUsuarios = SUsuariosCollectionSUsuarios.getIdPerfil();
+                SUsuariosCollectionSUsuarios.setIdPerfil(SPerfiles);
+                SUsuariosCollectionSUsuarios = em.merge(SUsuariosCollectionSUsuarios);
+                if (oldIdPerfilOfSUsuariosCollectionSUsuarios != null) {
+                    oldIdPerfilOfSUsuariosCollectionSUsuarios.getSUsuariosCollection().remove(SUsuariosCollectionSUsuarios);
+                    oldIdPerfilOfSUsuariosCollectionSUsuarios = em.merge(oldIdPerfilOfSUsuariosCollectionSUsuarios);
+                }
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -51,7 +72,34 @@ public class SPerfilesJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            SPerfiles persistentSPerfiles = em.find(SPerfiles.class, SPerfiles.getIdPerfil());
+            Collection<SUsuarios> SUsuariosCollectionOld = persistentSPerfiles.getSUsuariosCollection();
+            Collection<SUsuarios> SUsuariosCollectionNew = SPerfiles.getSUsuariosCollection();
+            Collection<SUsuarios> attachedSUsuariosCollectionNew = new ArrayList<SUsuarios>();
+            for (SUsuarios SUsuariosCollectionNewSUsuariosToAttach : SUsuariosCollectionNew) {
+                SUsuariosCollectionNewSUsuariosToAttach = em.getReference(SUsuariosCollectionNewSUsuariosToAttach.getClass(), SUsuariosCollectionNewSUsuariosToAttach.getIdUsuario());
+                attachedSUsuariosCollectionNew.add(SUsuariosCollectionNewSUsuariosToAttach);
+            }
+            SUsuariosCollectionNew = attachedSUsuariosCollectionNew;
+            SPerfiles.setSUsuariosCollection(SUsuariosCollectionNew);
             SPerfiles = em.merge(SPerfiles);
+            for (SUsuarios SUsuariosCollectionOldSUsuarios : SUsuariosCollectionOld) {
+                if (!SUsuariosCollectionNew.contains(SUsuariosCollectionOldSUsuarios)) {
+                    SUsuariosCollectionOldSUsuarios.setIdPerfil(null);
+                    SUsuariosCollectionOldSUsuarios = em.merge(SUsuariosCollectionOldSUsuarios);
+                }
+            }
+            for (SUsuarios SUsuariosCollectionNewSUsuarios : SUsuariosCollectionNew) {
+                if (!SUsuariosCollectionOld.contains(SUsuariosCollectionNewSUsuarios)) {
+                    SPerfiles oldIdPerfilOfSUsuariosCollectionNewSUsuarios = SUsuariosCollectionNewSUsuarios.getIdPerfil();
+                    SUsuariosCollectionNewSUsuarios.setIdPerfil(SPerfiles);
+                    SUsuariosCollectionNewSUsuarios = em.merge(SUsuariosCollectionNewSUsuarios);
+                    if (oldIdPerfilOfSUsuariosCollectionNewSUsuarios != null && !oldIdPerfilOfSUsuariosCollectionNewSUsuarios.equals(SPerfiles)) {
+                        oldIdPerfilOfSUsuariosCollectionNewSUsuarios.getSUsuariosCollection().remove(SUsuariosCollectionNewSUsuarios);
+                        oldIdPerfilOfSUsuariosCollectionNewSUsuarios = em.merge(oldIdPerfilOfSUsuariosCollectionNewSUsuarios);
+                    }
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -80,6 +128,11 @@ public class SPerfilesJpaController implements Serializable {
                 SPerfiles.getIdPerfil();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The SPerfiles with id " + id + " no longer exists.", enfe);
+            }
+            Collection<SUsuarios> SUsuariosCollection = SPerfiles.getSUsuariosCollection();
+            for (SUsuarios SUsuariosCollectionSUsuarios : SUsuariosCollection) {
+                SUsuariosCollectionSUsuarios.setIdPerfil(null);
+                SUsuariosCollectionSUsuarios = em.merge(SUsuariosCollectionSUsuarios);
             }
             em.remove(SPerfiles);
             em.getTransaction().commit();

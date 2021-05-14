@@ -6,6 +6,7 @@
 package entidades;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -15,10 +16,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -38,6 +41,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "SPerfiles.findByFechaServidor", query = "SELECT s FROM SPerfiles s WHERE s.fechaServidor = :fechaServidor"),
     @NamedQuery(name = "SPerfiles.findByIdUsuarioModifica", query = "SELECT s FROM SPerfiles s WHERE s.idUsuarioModifica = :idUsuarioModifica")})
 public class SPerfiles implements Serializable {
+
+    @OneToMany(mappedBy = "idPerfil")
+    private Collection<SUsuarios> sUsuariosCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -171,6 +177,15 @@ public class SPerfiles implements Serializable {
     @Override
     public String toString() {
         return "entidades.SPerfiles[ idPerfil=" + idPerfil + " ]";
+    }
+
+    @XmlTransient
+    public Collection<SUsuarios> getSUsuariosCollection() {
+        return sUsuariosCollection;
+    }
+
+    public void setSUsuariosCollection(Collection<SUsuarios> sUsuariosCollection) {
+        this.sUsuariosCollection = sUsuariosCollection;
     }
     
 }

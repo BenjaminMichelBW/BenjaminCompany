@@ -3,6 +3,7 @@ package catalogos;
 
 import controller.SAccesosJpaController;
 import entidades.SAccesos;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,7 +21,7 @@ import org.primefaces.event.SelectEvent;
  */
 @ManagedBean
 @ApplicationScoped
-public class AccesosBean {
+public class AccesosBean implements Serializable {
 
     private List<SAccesos> listaAccesos;
     private SAccesos accesos;

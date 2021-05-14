@@ -13,29 +13,43 @@ and open the template in the editor.
         <title>Menu</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     </h:head>
+    <style>
+        .ui-menuitem-text{
+            margin-left: 15px;
+        }
+    </style>
     <h:body>
-            <p:menu style="width: 190px">
-                <p:menuitem action="#{menuBean.seleccionMenu(1)}" update="panelCenter" >
-                    <i class="pi pi-home" > Inicio</i>
+        <p:menu style="width: 190px" toggleable="true">
+            <p:menuitem action="#{menuBean.seleccionMenu(1)}" update="panelCenter" >
+                <i class="pi pi-home" > Inicio</i>
+            </p:menuitem>
+            <p:submenu label="Catálogos" icon="pi pi-file-pdf">
+                <p:menuitem action="#{menuBean.seleccionMenu(2)}" update="panelCenter" >
+                    <i class="pi pi-users"> Clientes</i>
                 </p:menuitem>
-                <p:submenu label="Catálogos">
-                    <p:menuitem action="#{menuBean.seleccionMenu(2)}" update="panelCenter" >
-                        <i class="pi pi-users"> Clientes</i>
-                    </p:menuitem>
-                    <p:menuitem action="#{menuBean.seleccionMenu(3)}" update="panelCenter" >
-                        <i class="pi pi-briefcase"> Distribuidores</i>
-                    </p:menuitem>
-                    <p:menuitem action="#{menuBean.seleccionMenu(4)}" update="panelCenter" >
-                        <i class="pi pi-id-card"> Telefonía</i>
-                    </p:menuitem>
-                    <p:menuitem action="#{menuBean.seleccionMenu(5)}" update="panelCenter" >
-                        <i class="pi pi-star-o"> Accesos</i>
-                    </p:menuitem>
-                    <p:menuitem action="#{menuBean.seleccionMenu(6)}" update="panelCenter" >
-                        <i class="pi pi-user-plus"> Perfiles</i>
-                    </p:menuitem>
-                </p:submenu>
-            </p:menu>
+                <p:menuitem action="#{menuBean.seleccionMenu(3)}" update="panelCenter" >
+                    <i class="pi pi-briefcase"> Distribuidores</i>
+                </p:menuitem>
+                <p:menuitem action="#{menuBean.seleccionMenu(4)}" update="panelCenter" >
+                    <i class="pi pi-id-card"> Telefonía</i>
+                </p:menuitem>
+                <p:menuitem action="#{menuBean.seleccionMenu(5)}" update="panelCenter" >
+                    <i class="pi pi-star-o"> Accesos</i>
+                </p:menuitem>
+                <p:menuitem action="#{menuBean.seleccionMenu(6)}" update="panelCenter" >
+                    <i class="pi pi-user-plus"> Perfiles</i>
+                </p:menuitem>
+            </p:submenu>
+            <p:submenu label="Reporte">
+                <p:menuitem action="#{menuBean.seleccionMenu(7)}" update="panelCenter" >
+                    <i class="pi pi-file-pdf"> Reporte</i>
+                </p:menuitem>
+            </p:submenu>
+        </p:menu>
+        
+
+
     </h:body>
 </html>

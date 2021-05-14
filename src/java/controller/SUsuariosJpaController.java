@@ -6,15 +6,19 @@
 package controller;
 
 import controller.exceptions.NonexistentEntityException;
-import entidades.SUsuarios;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import entidades.SPerfiles;
+import entidades.CClientes;
+import entidades.SUsuarios;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import utils.LocalEntityManagerFactory;
 
 /**
@@ -24,7 +28,7 @@ import utils.LocalEntityManagerFactory;
 public class SUsuariosJpaController implements Serializable {
 
     public SUsuariosJpaController() {
-         this.emf = LocalEntityManagerFactory.getEntityManagerFactory();
+        this.emf = LocalEntityManagerFactory.getEntityManagerFactory();
     }
     private EntityManagerFactory emf = null;
 
@@ -33,11 +37,38 @@ public class SUsuariosJpaController implements Serializable {
     }
 
     public void create(SUsuarios SUsuarios) {
+        if (SUsuarios.getCClientesCollection() == null) {
+            SUsuarios.setCClientesCollection(new ArrayList<CClientes>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            SPerfiles idPerfil = SUsuarios.getIdPerfil();
+            if (idPerfil != null) {
+                idPerfil = em.getReference(idPerfil.getClass(), idPerfil.getIdPerfil());
+                SUsuarios.setIdPerfil(idPerfil);
+            }
+            Collection<CClientes> attachedCClientesCollection = new ArrayList<CClientes>();
+            for (CClientes CClientesCollectionCClientesToAttach : SUsuarios.getCClientesCollection()) {
+                CClientesCollectionCClientesToAttach = em.getReference(CClientesCollectionCClientesToAttach.getClass(), CClientesCollectionCClientesToAttach.getIdCliente());
+                attachedCClientesCollection.add(CClientesCollectionCClientesToAttach);
+            }
+            SUsuarios.setCClientesCollection(attachedCClientesCollection);
             em.persist(SUsuarios);
+            if (idPerfil != null) {
+                idPerfil.getSUsuariosCollection().add(SUsuarios);
+                idPerfil = em.merge(idPerfil);
+            }
+            for (CClientes CClientesCollectionCClientes : SUsuarios.getCClientesCollection()) {
+                SUsuarios oldIdUsuarioModificaOfCClientesCollectionCClientes = CClientesCollectionCClientes.getIdUsuarioModifica();
+                CClientesCollectionCClientes.setIdUsuarioModifica(SUsuarios);
+                CClientesCollectionCClientes = em.merge(CClientesCollectionCClientes);
+                if (oldIdUsuarioModificaOfCClientesCollectionCClientes != null) {
+                    oldIdUsuarioModificaOfCClientesCollectionCClientes.getCClientesCollection().remove(CClientesCollectionCClientes);
+                    oldIdUsuarioModificaOfCClientesCollectionCClientes = em.merge(oldIdUsuarioModificaOfCClientesCollectionCClientes);
+                }
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -51,7 +82,48 @@ public class SUsuariosJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            SUsuarios persistentSUsuarios = em.find(SUsuarios.class, SUsuarios.getIdUsuario());
+            SPerfiles idPerfilOld = persistentSUsuarios.getIdPerfil();
+            SPerfiles idPerfilNew = SUsuarios.getIdPerfil();
+            Collection<CClientes> CClientesCollectionOld = persistentSUsuarios.getCClientesCollection();
+            Collection<CClientes> CClientesCollectionNew = SUsuarios.getCClientesCollection();
+            if (idPerfilNew != null) {
+                idPerfilNew = em.getReference(idPerfilNew.getClass(), idPerfilNew.getIdPerfil());
+                SUsuarios.setIdPerfil(idPerfilNew);
+            }
+            Collection<CClientes> attachedCClientesCollectionNew = new ArrayList<CClientes>();
+            for (CClientes CClientesCollectionNewCClientesToAttach : CClientesCollectionNew) {
+                CClientesCollectionNewCClientesToAttach = em.getReference(CClientesCollectionNewCClientesToAttach.getClass(), CClientesCollectionNewCClientesToAttach.getIdCliente());
+                attachedCClientesCollectionNew.add(CClientesCollectionNewCClientesToAttach);
+            }
+            CClientesCollectionNew = attachedCClientesCollectionNew;
+            SUsuarios.setCClientesCollection(CClientesCollectionNew);
             SUsuarios = em.merge(SUsuarios);
+            if (idPerfilOld != null && !idPerfilOld.equals(idPerfilNew)) {
+                idPerfilOld.getSUsuariosCollection().remove(SUsuarios);
+                idPerfilOld = em.merge(idPerfilOld);
+            }
+            if (idPerfilNew != null && !idPerfilNew.equals(idPerfilOld)) {
+                idPerfilNew.getSUsuariosCollection().add(SUsuarios);
+                idPerfilNew = em.merge(idPerfilNew);
+            }
+            for (CClientes CClientesCollectionOldCClientes : CClientesCollectionOld) {
+                if (!CClientesCollectionNew.contains(CClientesCollectionOldCClientes)) {
+                    CClientesCollectionOldCClientes.setIdUsuarioModifica(null);
+                    CClientesCollectionOldCClientes = em.merge(CClientesCollectionOldCClientes);
+                }
+            }
+            for (CClientes CClientesCollectionNewCClientes : CClientesCollectionNew) {
+                if (!CClientesCollectionOld.contains(CClientesCollectionNewCClientes)) {
+                    SUsuarios oldIdUsuarioModificaOfCClientesCollectionNewCClientes = CClientesCollectionNewCClientes.getIdUsuarioModifica();
+                    CClientesCollectionNewCClientes.setIdUsuarioModifica(SUsuarios);
+                    CClientesCollectionNewCClientes = em.merge(CClientesCollectionNewCClientes);
+                    if (oldIdUsuarioModificaOfCClientesCollectionNewCClientes != null && !oldIdUsuarioModificaOfCClientesCollectionNewCClientes.equals(SUsuarios)) {
+                        oldIdUsuarioModificaOfCClientesCollectionNewCClientes.getCClientesCollection().remove(CClientesCollectionNewCClientes);
+                        oldIdUsuarioModificaOfCClientesCollectionNewCClientes = em.merge(oldIdUsuarioModificaOfCClientesCollectionNewCClientes);
+                    }
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -80,6 +152,16 @@ public class SUsuariosJpaController implements Serializable {
                 SUsuarios.getIdUsuario();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The SUsuarios with id " + id + " no longer exists.", enfe);
+            }
+            SPerfiles idPerfil = SUsuarios.getIdPerfil();
+            if (idPerfil != null) {
+                idPerfil.getSUsuariosCollection().remove(SUsuarios);
+                idPerfil = em.merge(idPerfil);
+            }
+            Collection<CClientes> CClientesCollection = SUsuarios.getCClientesCollection();
+            for (CClientes CClientesCollectionCClientes : CClientesCollection) {
+                CClientesCollectionCClientes.setIdUsuarioModifica(null);
+                CClientesCollectionCClientes = em.merge(CClientesCollectionCClientes);
             }
             em.remove(SUsuarios);
             em.getTransaction().commit();

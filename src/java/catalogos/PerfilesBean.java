@@ -7,6 +7,7 @@ import entidades.SAccesos;
 import entidades.SPerfiles;
 import entidades.SPerfilesAccesos;
 import entidades.SPerfilesAccesosPK;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,7 @@ import utils.TraeDatoSesion;
  */
 @ManagedBean
 @ApplicationScoped
-public class PerfilesBean {
+public class PerfilesBean implements Serializable {
 
     private List<SPerfiles> listaPerfiles;
     private SPerfiles perfiles;

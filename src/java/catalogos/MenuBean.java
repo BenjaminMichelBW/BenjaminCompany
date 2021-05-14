@@ -3,19 +3,22 @@ package catalogos;
 import java.io.Serializable;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import org.primefaces.model.menu.MenuModel;
 
 /**
  *
- * @author Benjamin Michel 2021-04-29
+ * @author Benjamin Michel 
+ * @since 2021-04-29
  */
 @ManagedBean
 @ApplicationScoped
 public class MenuBean implements Serializable {
 
+    private MenuModel modo;
     private String opcion;
 
     public MenuBean() {
-        seleccionMenu(1);
+       seleccionMenu(1);
     }
 
     /**
@@ -43,6 +46,9 @@ public class MenuBean implements Serializable {
             case 6:
                 opcion = "/catalogos/catalogoPerfiles.xhtml";
                 break;
+            case 7:
+                opcion = "/reporte/reporte.xhtml";
+                break;
             default:
                 opcion = "/index.xhtml";
                 break;
@@ -62,6 +68,20 @@ public class MenuBean implements Serializable {
      */
     public void setOpcion(String opcion) {
         this.opcion = opcion;
+    }
+
+    /**
+     * @return the modo
+     */
+    public MenuModel getModo() {
+        return modo;
+    }
+
+    /**
+     * @param modo the modo to set
+     */
+    public void setModo(MenuModel modo) {
+        this.modo = modo;
     }
 //</editor-fold>
 

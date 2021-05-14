@@ -13,9 +13,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import entidades.SAccesos;
 import entidades.SAplicaciones;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureQuery;
 import utils.LocalEntityManagerFactory;
 
 /**
@@ -25,7 +30,7 @@ import utils.LocalEntityManagerFactory;
 public class SAplicacionesJpaController implements Serializable {
 
     public SAplicacionesJpaController() {
-         this.emf = LocalEntityManagerFactory.getEntityManagerFactory();
+        this.emf = LocalEntityManagerFactory.getEntityManagerFactory();
     }
     private EntityManagerFactory emf = null;
 
@@ -165,5 +170,28 @@ public class SAplicacionesJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public List<SAplicaciones> traerDatosMenu(String usuario) {
+        List<SAplicaciones> listaMenu = new ArrayList<>();
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            
+            StoredProcedureQuery sp = em.createStoredProcedureQuery("stp_CargaMenu");
+            sp.registerStoredProcedureParameter("usuario", String.class, ParameterMode.IN);
+            sp.setParameter("usuario", usuario);
+            sp.execute();
+            
+            listaMenu = sp.getResultList();
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+        return listaMenu;
+    }
+
 }

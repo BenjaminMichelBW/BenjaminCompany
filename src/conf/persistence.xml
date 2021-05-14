@@ -9,6 +9,9 @@
     <class>entidades.SPerfilesAccesos</class>
     <class>entidades.SUsuarios</class>
     <class>catalogos.SAccesos</class>
+    <class>entidades.CCiudad</class>
+    <class>entidades.CDistribuidor</class>
+    <class>entidades.CClientes</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
     <properties>
