@@ -48,6 +48,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "SUsuarios.findByIdCliente", query = "SELECT s FROM SUsuarios s WHERE s.idCliente = :idCliente")})
 public class SUsuarios implements Serializable {
 
+    @OneToMany(mappedBy = "idUsuario")
+    private Collection<HActivacion> hActivacionCollection;
+
     @OneToMany(mappedBy = "idUsuarioModifica")
     private Collection<CClientes> cClientesCollection;
 
@@ -246,6 +249,15 @@ public class SUsuarios implements Serializable {
 
     public void setCClientesCollection(Collection<CClientes> cClientesCollection) {
         this.cClientesCollection = cClientesCollection;
+    }
+
+    @XmlTransient
+    public Collection<HActivacion> getHActivacionCollection() {
+        return hActivacionCollection;
+    }
+
+    public void setHActivacionCollection(Collection<HActivacion> hActivacionCollection) {
+        this.hActivacionCollection = hActivacionCollection;
     }
     
 }

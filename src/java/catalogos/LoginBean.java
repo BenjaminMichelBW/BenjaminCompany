@@ -51,6 +51,9 @@ public class LoginBean implements Serializable {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("nombreUsuario", usuario.getNombreUsuario());
 
             setNombreUsuario(TraeDatoSesion.traerNombreUsuario());
+            MenuBean menu = new MenuBean();
+            
+            menu.cargaMenuDinamico();
 
             if (res.getRespuesta()
                     .getIdRespuesta() == 0) {

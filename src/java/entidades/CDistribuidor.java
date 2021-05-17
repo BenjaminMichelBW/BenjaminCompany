@@ -43,6 +43,9 @@ import javax.xml.bind.annotation.XmlTransient;
 public class CDistribuidor implements Serializable {
 
     @OneToMany(mappedBy = "idDistribuidor")
+    private Collection<HActivacion> hActivacionCollection;
+
+    @OneToMany(mappedBy = "idDistribuidor")
     private Collection<CClientes> cClientesCollection;
 
     private static final long serialVersionUID = 1L;
@@ -182,6 +185,15 @@ public class CDistribuidor implements Serializable {
 
     public void setCClientesCollection(Collection<CClientes> cClientesCollection) {
         this.cClientesCollection = cClientesCollection;
+    }
+
+    @XmlTransient
+    public Collection<HActivacion> getHActivacionCollection() {
+        return hActivacionCollection;
+    }
+
+    public void setHActivacionCollection(Collection<HActivacion> hActivacionCollection) {
+        this.hActivacionCollection = hActivacionCollection;
     }
     
 }

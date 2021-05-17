@@ -1,24 +1,36 @@
 package catalogos;
 
+import controller.SAplicacionesJpaController;
 import java.io.Serializable;
+import java.util.List;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import objetos.Menu;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
+import utils.TraeDatoSesion;
 
 /**
  *
- * @author Benjamin Michel 
+ * @author Benjamin Michel
  * @since 2021-04-29
  */
 @ManagedBean
 @ApplicationScoped
 public class MenuBean implements Serializable {
 
-    private MenuModel modo;
+    private MenuModel model;
+    private List<Menu> lista;
+
     private String opcion;
 
     public MenuBean() {
-       seleccionMenu(1);
+        model = new DefaultMenuModel();
+        seleccionMenu(1);
+        cargaMenuDinamico();
+
     }
 
     /**
@@ -47,7 +59,10 @@ public class MenuBean implements Serializable {
                 opcion = "/catalogos/catalogoPerfiles.xhtml";
                 break;
             case 7:
-                opcion = "/reporte/reporte.xhtml";
+                opcion = "/reporte/reporteClientes.xhtml";
+                break;
+            case 8:
+                opcion = "/reporte/reporteActivacion.xhtml";
                 break;
             default:
                 opcion = "/index.xhtml";
@@ -55,11 +70,54 @@ public class MenuBean implements Serializable {
         }
     }
 
+    public void cargaMenuDinamico() {
+        SAplicacionesJpaController sAplicacionesJpa = new SAplicacionesJpaController();
+        String usuario = TraeDatoSesion.traerUsuario();
+        lista = sAplicacionesJpa.traerDatosMenu(usuario);
+        DefaultSubMenu firstSubmenu = new DefaultSubMenu();
+
+        for (Menu m : lista) {
+            if (m.getUrl().equals("#")) {
+                firstSubmenu = DefaultSubMenu.builder()
+                        .label(m.getNomAplicacion())
+                        .icon(m.getIcono())
+                        .style("font-size:19px;")
+                        .build();
+                
+                String nombreMenu = m.getNomAplicacion();
+                String nombreMenuConfirmacion = "";
+                for (Menu i : lista) {
+                    String submenu = i.getUrl();
+                    if (i.getIdMenu() == 0){
+                        nombreMenuConfirmacion = i.getNomAplicacion();
+                    }
+
+                    if (!submenu.equals("#") && nombreMenu.equals(nombreMenuConfirmacion) ) {
+                        DefaultMenuItem item = DefaultMenuItem.builder()
+                                .value(i.getNomAplicacion())
+                                .url(i.getUrl())
+                                .icon(i.getIcono())
+                                .update("panelCenter")
+                                .style("font-size:19px;")
+                                .build();
+                        firstSubmenu.getElements().add(item);
+
+                    }
+
+                }
+                model.addElement(firstSubmenu);
+            }
+            
+        }
+
+    }
+
+
 //<editor-fold defaultstate="collapsed" desc="Gets y Sets">
-    /**
-     * @return the opcion
-     */
-    public String getOpcion() {
+/**
+ * @return the opcion
+ */
+public String getOpcion() {
         return opcion;
     }
 
@@ -71,17 +129,17 @@ public class MenuBean implements Serializable {
     }
 
     /**
-     * @return the modo
+     * @return the model
      */
-    public MenuModel getModo() {
-        return modo;
+    public MenuModel getModel() {
+        return model;
     }
 
     /**
-     * @param modo the modo to set
+     * @param model the model to set
      */
-    public void setModo(MenuModel modo) {
-        this.modo = modo;
+    public void setModel(MenuModel model) {
+        this.model = model;
     }
 //</editor-fold>
 

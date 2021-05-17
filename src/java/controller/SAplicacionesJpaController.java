@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureQuery;
+import objetos.Menu;
 import utils.LocalEntityManagerFactory;
 
 /**
@@ -171,8 +172,10 @@ public class SAplicacionesJpaController implements Serializable {
         }
     }
 
-    public List<SAplicaciones> traerDatosMenu(String usuario) {
-        List<SAplicaciones> listaMenu = new ArrayList<>();
+    public List<Menu> traerDatosMenu(String usuario) {
+        List<Menu> listaMenu = new ArrayList<>();
+        Menu aplicaciones = new Menu();
+        
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -183,7 +186,20 @@ public class SAplicacionesJpaController implements Serializable {
             sp.setParameter("usuario", usuario);
             sp.execute();
             
-            listaMenu = sp.getResultList();
+            List<Object[]> resultado = sp.getResultList();
+            
+            for (Object[] iterador : resultado){
+                aplicaciones.setIdMenu(Integer.parseInt(iterador[0].toString()));
+                aplicaciones.setNomAplicacion(iterador[1].toString());
+                aplicaciones.setIcono(iterador[2].toString());
+                aplicaciones.setUrl(iterador[3].toString());
+                aplicaciones.setOrden(Integer.parseInt(iterador[4].toString()));
+                
+                listaMenu.add(aplicaciones);
+                aplicaciones = new Menu();
+            }
+            
+            
         } catch (Exception ex) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         } finally {

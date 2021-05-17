@@ -12,6 +12,7 @@
     <class>entidades.CCiudad</class>
     <class>entidades.CDistribuidor</class>
     <class>entidades.CClientes</class>
+    <class>entidades.HActivacion</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
     <properties>

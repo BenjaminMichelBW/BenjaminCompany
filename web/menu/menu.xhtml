@@ -44,12 +44,15 @@ and open the template in the editor.
             </p:submenu>
             <p:submenu label="Reporte">
                 <p:menuitem action="#{menuBean.seleccionMenu(7)}" update="panelCenter" >
-                    <i class="pi pi-file-pdf"> Reporte</i>
+                    <i class="pi pi-file-pdf"> Reporte clientes</i>
+                </p:menuitem>
+                <p:menuitem action="#{menuBean.seleccionMenu(8)}" update="panelCenter" >
+                    <i class="pi pi-file-pdf"> Reporte activaciones</i>
                 </p:menuitem>
             </p:submenu>
         </p:menu>
-        
 
+        <!-- <p:menu toggleable="true" model="menuBean.model"/>-->
 
     </h:body>
 </html>
