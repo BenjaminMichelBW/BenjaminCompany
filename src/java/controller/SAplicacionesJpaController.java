@@ -172,6 +172,12 @@ public class SAplicacionesJpaController implements Serializable {
         }
     }
 
+    /**
+     * trae los datos para el menu dinamico
+     * 
+     * @param usuario
+     * @return 
+     */
     public List<Menu> traerDatosMenu(String usuario) {
         List<Menu> listaMenu = new ArrayList<>();
         Menu aplicaciones = new Menu();

@@ -28,54 +28,69 @@ public class MenuBean implements Serializable {
 
     public MenuBean() {
         model = new DefaultMenuModel();
-        seleccionMenu(1);
+        opcion = "/index.xhtml";
         cargaMenuDinamico();
 
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Menu no dinamico">
     /**
      * Asigna el valor para mostrar los catalogos
      *
      * @param seleccion
      */
-    public void seleccionMenu(int seleccion) {
-        switch (seleccion) {
-            case 1:
-                opcion = "/index.xhtml";
-                break;
-            case 2:
-                opcion = "/catalogos/catalogoCliente.xhtml";
-                break;
-            case 3:
-                opcion = "/catalogos/catalogoDistribuidor.xhtml";
-                break;
-            case 4:
-                opcion = "/catalogos/catalogoTelefonia.xhtml";
-                break;
-            case 5:
-                opcion = "/catalogos/catalogoAccesos.xhtml";
-                break;
-            case 6:
-                opcion = "/catalogos/catalogoPerfiles.xhtml";
-                break;
-            case 7:
-                opcion = "/reporte/reporteClientes.xhtml";
-                break;
-            case 8:
-                opcion = "/reporte/reporteActivacion.xhtml";
-                break;
-            default:
-                opcion = "/index.xhtml";
-                break;
-        }
-    }
+    /**public void seleccionMenu(int seleccion) {
+     * switch (seleccion) {
+     * case 1:
+     * opcion = "/index.xhtml";
+     * break;
+     * case 2:
+     * opcion = "/catalogo/catalogoCliente.xhtml";
+     * break;
+     * case 3:
+     * opcion = "/catalogo/catalogoDistribuidor.xhtml";
+     * break;
+     * case 4:
+     * opcion = "/catalogo/catalogoTelefonia.xhtml";
+     * break;
+     * case 5:
+     * opcion = "/catalogo/catalogoAccesos.xhtml";
+     * break;
+     * case 6:
+     * opcion = "/catalogo/catalogoPerfil.xhtml";
+     * break;
+     * case 7:
+     * opcion = "/reporte/reporteClientes.xhtml";
+     * break;
+     * case 8:
+     * opcion = "/reporte/reporteActivacion.xhtml";
+     * break;
+     * default:
+     * opcion = "/index.xhtml";
+     * break;
+     * }
+     * }*/
+//</editor-fold>
 
+    /**
+     * Carga del menu dinamico
+     * 
+     */
     public void cargaMenuDinamico() {
         SAplicacionesJpaController sAplicacionesJpa = new SAplicacionesJpaController();
         String usuario = TraeDatoSesion.traerUsuario();
         lista = sAplicacionesJpa.traerDatosMenu(usuario);
         DefaultSubMenu firstSubmenu = new DefaultSubMenu();
 
+        DefaultMenuItem itemIndex = DefaultMenuItem.builder()
+                                .value("Inicio")
+                                .icon("fa fa-home")
+                                .update("panelCenter")
+                                .style("font-size:19px;")
+                                .build();
+                        itemIndex.setCommand(String.format("#{menuBean.opcionMenuDinamico('%s')}", "/index.xhtml"));
+        model.addElement(itemIndex);
+        
         for (Menu m : lista) {
             if (m.getUrl().equals("#")) {
                 firstSubmenu = DefaultSubMenu.builder()
@@ -95,11 +110,11 @@ public class MenuBean implements Serializable {
                     if (!submenu.equals("#") && nombreMenu.equals(nombreMenuConfirmacion) ) {
                         DefaultMenuItem item = DefaultMenuItem.builder()
                                 .value(i.getNomAplicacion())
-                                .url(i.getUrl())
                                 .icon(i.getIcono())
                                 .update("panelCenter")
                                 .style("font-size:19px;")
                                 .build();
+                        item.setCommand(String.format("#{menuBean.opcionMenuDinamico('%s')}", i.getUrl()));
                         firstSubmenu.getElements().add(item);
 
                     }
@@ -110,6 +125,10 @@ public class MenuBean implements Serializable {
             
         }
 
+    }
+    
+    public void opcionMenuDinamico(String url){
+        opcion = url;
     }
 
 

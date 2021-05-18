@@ -21,38 +21,38 @@ and open the template in the editor.
         }
     </style>
     <h:body>
-        <p:menu style="width: 190px" toggleable="true">
-            <p:menuitem action="#{menuBean.seleccionMenu(1)}" update="panelCenter" >
+        <!-- comment   <p:menu style="width: 190px" toggleable="true">
+            <p:menuitem action="{menuBean.seleccionMenu(1)}" update="panelCenter" >
                 <i class="pi pi-home" > Inicio</i>
             </p:menuitem>
             <p:submenu label="Catálogos">
-                <p:menuitem action="#{menuBean.seleccionMenu(2)}" update="panelCenter" >
+                <p:menuitem action="{menuBean.seleccionMenu(2)}" update="panelCenter" >
                     <i class="pi pi-users"> Clientes</i>
                 </p:menuitem>
-                <p:menuitem action="#{menuBean.seleccionMenu(3)}" update="panelCenter" >
+                <p:menuitem action="{menuBean.seleccionMenu(3)}" update="panelCenter" >
                     <i class="pi pi-briefcase"> Distribuidores</i>
                 </p:menuitem>
-                <p:menuitem action="#{menuBean.seleccionMenu(4)}" update="panelCenter" >
+                <p:menuitem action="{menuBean.seleccionMenu(4)}" update="panelCenter" >
                     <i class="pi pi-id-card"> Telefonía</i>
                 </p:menuitem>
-                <p:menuitem action="#{menuBean.seleccionMenu(5)}" update="panelCenter" >
+                <p:menuitem action="{menuBean.seleccionMenu(5)}" update="panelCenter" >
                     <i class="pi pi-star-o"> Accesos</i>
                 </p:menuitem>
-                <p:menuitem action="#{menuBean.seleccionMenu(6)}" update="panelCenter" >
+                <p:menuitem action="{menuBean.seleccionMenu(6)}" update="panelCenter" >
                     <i class="pi pi-user-plus"> Perfiles</i>
                 </p:menuitem>
             </p:submenu>
             <p:submenu label="Reporte">
-                <p:menuitem action="#{menuBean.seleccionMenu(7)}" update="panelCenter" >
+                <p:menuitem action="{menuBean.seleccionMenu(7)}" update="panelCenter" >
                     <i class="pi pi-file-pdf"> Reporte clientes</i>
                 </p:menuitem>
-                <p:menuitem action="#{menuBean.seleccionMenu(8)}" update="panelCenter" >
+                <p:menuitem action="{menuBean.seleccionMenu(8)}" update="panelCenter" >
                     <i class="pi pi-file-pdf"> Reporte activaciones</i>
                 </p:menuitem>
             </p:submenu>
-        </p:menu>
+        </p:menu>-->
 
-        <!-- <p:menu toggleable="true" model="menuBean.model"/>-->
+        <p:menu toggleable="true" model="#{menuBean.model}" id="menuDinamico"/>
 
     </h:body>
 </html>

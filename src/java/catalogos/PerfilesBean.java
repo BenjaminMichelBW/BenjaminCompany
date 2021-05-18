@@ -175,6 +175,7 @@ public class PerfilesBean implements Serializable {
                         perfilesAccesos.setIdUsuarioModifica(usuarioSesion);
                         sPerfilesAccesosJpa.create(perfilesAccesos);
                     }
+                    
 
                 }
                 nuevoPerfil();
