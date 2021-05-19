@@ -87,8 +87,8 @@ public class MenuBean implements Serializable {
                                 .icon("fa fa-home")
                                 .update("panelCenter")
                                 .style("font-size:19px;")
+                                .command(String.format("#{menuBean.opcionMenuDinamico('%s')}", "/index.xhtml"))
                                 .build();
-                        itemIndex.setCommand(String.format("#{menuBean.opcionMenuDinamico('%s')}", "/index.xhtml"));
         model.addElement(itemIndex);
         
         for (Menu m : lista) {
@@ -113,8 +113,8 @@ public class MenuBean implements Serializable {
                                 .icon(i.getIcono())
                                 .update("panelCenter")
                                 .style("font-size:19px;")
+                                .command(String.format("#{menuBean.opcionMenuDinamico('%s')}", i.getUrl()))
                                 .build();
-                        item.setCommand(String.format("#{menuBean.opcionMenuDinamico('%s')}", i.getUrl()));
                         firstSubmenu.getElements().add(item);
 
                     }

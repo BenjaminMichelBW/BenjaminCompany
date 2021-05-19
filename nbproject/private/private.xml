@@ -5,10 +5,9 @@
         <group>
             <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/web/reporte/reporteActivacion.xhtml</file>
             <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/web/reporte/reporteClientes.xhtml</file>
-            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/controller/HActivacionJpaController.java</file>
-            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/catalogos/LoginBean.java</file>
+            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/controller/CClientesJpaController.java</file>
             <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/catalogos/ReporteActivacionBean.java</file>
-            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/catalogos/MenuBean.java</file>
+            <file>file:/C:/Blueweb/Proyectos/BenjaminCompany/src/java/catalogos/ReporteClienteBean.java</file>
         </group>
     </open-files>
 </project-private>

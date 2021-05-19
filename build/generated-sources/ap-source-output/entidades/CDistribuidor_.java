@@ -1,18 +1,20 @@
 package entidades;
 
 import entidades.CClientes;
+import entidades.HActivacion;
 import java.util.Date;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.CollectionAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.7.7.v20200504-rNA", date="2021-05-17T08:52:00")
+@Generated(value="EclipseLink-2.7.7.v20200504-rNA", date="2021-05-19T08:40:03")
 @StaticMetamodel(CDistribuidor.class)
 public class CDistribuidor_ { 
 
     public static volatile SingularAttribute<CDistribuidor, Date> fechaBaja;
     public static volatile SingularAttribute<CDistribuidor, Date> fechaAlta;
+    public static volatile CollectionAttribute<CDistribuidor, HActivacion> hActivacionCollection;
     public static volatile SingularAttribute<CDistribuidor, Long> idUsuarioModifica;
     public static volatile CollectionAttribute<CDistribuidor, CClientes> cClientesCollection;
     public static volatile SingularAttribute<CDistribuidor, Long> idDistribuidor;

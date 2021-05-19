@@ -1,6 +1,7 @@
 package entidades;
 
 import entidades.CClientes;
+import entidades.HActivacion;
 import entidades.SPerfiles;
 import java.util.Date;
 import javax.annotation.Generated;
@@ -8,7 +9,7 @@ import javax.persistence.metamodel.CollectionAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.7.7.v20200504-rNA", date="2021-05-17T08:52:00")
+@Generated(value="EclipseLink-2.7.7.v20200504-rNA", date="2021-05-19T08:40:03")
 @StaticMetamodel(SUsuarios.class)
 public class SUsuarios_ { 
 
@@ -20,6 +21,7 @@ public class SUsuarios_ {
     public static volatile SingularAttribute<SUsuarios, String> password;
     public static volatile SingularAttribute<SUsuarios, Long> idCliente;
     public static volatile SingularAttribute<SUsuarios, SPerfiles> idPerfil;
+    public static volatile CollectionAttribute<SUsuarios, HActivacion> hActivacionCollection;
     public static volatile SingularAttribute<SUsuarios, String> correo;
     public static volatile SingularAttribute<SUsuarios, String> usuario;
     public static volatile SingularAttribute<SUsuarios, Integer> idUsuarioModifica;

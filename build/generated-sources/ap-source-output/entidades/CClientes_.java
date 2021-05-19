@@ -2,13 +2,15 @@ package entidades;
 
 import entidades.CCiudad;
 import entidades.CDistribuidor;
+import entidades.HActivacion;
 import entidades.SUsuarios;
 import java.util.Date;
 import javax.annotation.Generated;
+import javax.persistence.metamodel.CollectionAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.7.7.v20200504-rNA", date="2021-05-17T08:52:00")
+@Generated(value="EclipseLink-2.7.7.v20200504-rNA", date="2021-05-19T08:40:03")
 @StaticMetamodel(CClientes.class)
 public class CClientes_ { 
 
@@ -24,6 +26,7 @@ public class CClientes_ {
     public static volatile SingularAttribute<CClientes, String> colonia;
     public static volatile SingularAttribute<CClientes, Long> idCliente;
     public static volatile SingularAttribute<CClientes, String> nombreCliente;
+    public static volatile CollectionAttribute<CClientes, HActivacion> hActivacionCollection;
     public static volatile SingularAttribute<CClientes, SUsuarios> idUsuarioModifica;
     public static volatile SingularAttribute<CClientes, CDistribuidor> idDistribuidor;
     public static volatile SingularAttribute<CClientes, Date> fechaServidor;
