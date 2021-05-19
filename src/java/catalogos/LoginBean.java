@@ -52,7 +52,6 @@ public class LoginBean implements Serializable {
 
             setNombreUsuario(TraeDatoSesion.traerNombreUsuario());
                         
-            
             if (res.getRespuesta()
                     .getIdRespuesta() == 0) {
                 ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();

@@ -88,39 +88,39 @@ and open the template in the editor.
                                  currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros">
 
                         <p:column headerText="ICCID" sortBy="#{activacionRep.iccid}" filterBy="#{activacionRep.iccid}">
-                            <h:outputText value="#{activacionRep.iccid}"/>
+                            <h:outputText value="#{activacionRep.iccid}" style="word-break: break-all;"/>
                         </p:column>
 
                         <p:column headerText="IMEI" sortBy="#{activacionRep.imei}" filterBy="#{activacionRep.imei}">
-                            <h:outputText value="#{activacionRep.imei}"/>
+                            <h:outputText value="#{activacionRep.imei}" style="word-break: break-all;"/>
                         </p:column>
 
                         <p:column headerText="Nombre distribuidor" sortBy="#{activacionRep.idDistribuidor.nombre}" filterBy="#{activacionRep.idDistribuidor.nombre}">
-                            <h:outputText value="#{activacionRep.idDistribuidor.nombre}"/>
+                            <h:outputText value="#{activacionRep.idDistribuidor.nombre}" style="word-break: break-all;"/>
                         </p:column>
 
                         <p:column headerText="Cliente" sortBy="#{activacionRep.idCliente.nombreCliente}" filterBy="#{activacionRep.idCliente.nombreCliente}">
-                            <h:outputText value="#{activacionRep.idCliente.nombreCliente}"/>
+                            <h:outputText value="#{activacionRep.idCliente.nombreCliente}" style="word-break: break-all;"/>
                         </p:column>
 
                         <p:column headerText="Ciudad" sortBy="#{activacionRep.idCiudad.descripcion}" filterBy="#{activacionRep.idCiudad.descripcion}">
-                            <h:outputText value="#{activacionRep.idCiudad.descripcion}"/>
+                            <h:outputText value="#{activacionRep.idCiudad.descripcion}" style="word-break: break-all;"/>
                         </p:column>
 
                         <p:column headerText="Tipo telefonia" sortBy="#{activacionRep.descripcionTipo}" filterBy="#{activacionRep.descripcionTipo}">
-                            <h:outputText value="#{activacionRep.descripcionTipo}"/>
+                            <h:outputText value="#{activacionRep.descripcionTipo}" style="word-break: break-all;"/>
                         </p:column>
 
                         <p:column headerText="Respuesta" sortBy="#{activacionRep.respuestaAplicacion}" filterBy="#{activacionRep.respuestaAplicacion}">
-                            <h:outputText value="#{activacionRep.respuestaAplicacion}"/>
+                            <h:outputText value="#{activacionRep.respuestaAplicacion}" style="word-break: break-all;"/>
                         </p:column>
 
                         <p:column headerText="Cantidad" sortBy="#{activacionRep.monto}" filterBy="#{activacionRep.monto}">
-                            <h:outputText value="#{activacionRep.monto}"/>
+                            <h:outputText value="#{activacionRep.monto}" style="word-break: break-all;"/>
                         </p:column>
 
                         <p:column headerText="Telefono" sortBy="#{activacionRep.telefono}" filterBy="#{activacionRep.telefono}">
-                            <h:outputText value="#{activacionRep.telefono}"/>
+                            <h:outputText value="#{activacionRep.telefono}" style="word-break: break-all;"/>
                         </p:column>
 
                         <p:column headerText="Fecha peticion" sortBy="#{activacionRep.fechaPeticion}">
@@ -132,7 +132,7 @@ and open the template in the editor.
                         </p:column>
 
                         <p:column headerText="Nombre usuario" sortBy="#{activacionRep.idUsuario.nombreUsuario}" filterBy="#{activacionRep.idUsuario.nombreUsuario}">
-                            <h:outputText value="#{activacionRep.idUsuario.nombreUsuario}"/>
+                            <h:outputText value="#{activacionRep.idUsuario.nombreUsuario}" style="word-break: break-all;"/>
                         </p:column>
 
                     </p:dataTable>
