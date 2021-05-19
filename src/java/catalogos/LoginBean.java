@@ -26,7 +26,6 @@ import utils.TraeDatoSesion;
  */
 @ManagedBean
 @SessionScoped
-
 public class LoginBean implements Serializable {
 
     private Usuario usuario;
@@ -60,6 +59,8 @@ public class LoginBean implements Serializable {
             setListaMenu(sAplicacionesJpa.traerDatosMenu(usuario.getUsuario()));
             
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("listaMenu", listaMenu);
+            
+            
 
             if (res.getRespuesta()
                     .getIdRespuesta() == 0) {

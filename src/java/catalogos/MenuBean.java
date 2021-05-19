@@ -1,10 +1,8 @@
 package catalogos;
 
-import controller.SAplicacionesJpaController;
 import java.io.Serializable;
-import java.util.List;
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import objetos.Menu;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
@@ -18,20 +16,18 @@ import utils.TraeDatoSesion;
  * @since 2021-04-29
  */
 @ManagedBean
-@ApplicationScoped
+@SessionScoped
 public class MenuBean implements Serializable {
 
     private MenuModel model;
-    private List<Menu> lista;
-
     private String opcion;
 
+    
     public MenuBean() {
         model = new DefaultMenuModel();
         opcion = "/index.xhtml";
         cargaMenuDinamico();
-
-    }
+    }    
 
     //<editor-fold defaultstate="collapsed" desc="Menu no dinamico">
     /**
@@ -77,9 +73,6 @@ public class MenuBean implements Serializable {
      * 
      */
     public void cargaMenuDinamico() {
-        SAplicacionesJpaController sAplicacionesJpa = new SAplicacionesJpaController();
-        
-        lista = TraeDatoSesion.traerListaMenu();
         DefaultSubMenu firstSubmenu = new DefaultSubMenu();
 
         DefaultMenuItem itemIndex = DefaultMenuItem.builder()
@@ -91,7 +84,7 @@ public class MenuBean implements Serializable {
                                 .build();
         model.addElement(itemIndex);
         
-        for (Menu m : lista) {
+        for (Menu m : TraeDatoSesion.traerListaMenu()) {
             if (m.getUrl().equals("#")) {
                 firstSubmenu = DefaultSubMenu.builder()
                         .label(m.getNomAplicacion())
@@ -101,7 +94,7 @@ public class MenuBean implements Serializable {
                 
                 String nombreMenu = m.getNomAplicacion();
                 String nombreMenuConfirmacion = "";
-                for (Menu i : lista) {
+                for (Menu i : TraeDatoSesion.traerListaMenu()) {
                     String submenu = i.getUrl();
                     if (i.getIdMenu() == 0){
                         nombreMenuConfirmacion = i.getNomAplicacion();
