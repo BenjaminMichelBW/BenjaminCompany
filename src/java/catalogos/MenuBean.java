@@ -78,8 +78,8 @@ public class MenuBean implements Serializable {
      */
     public void cargaMenuDinamico() {
         SAplicacionesJpaController sAplicacionesJpa = new SAplicacionesJpaController();
-        String usuario = TraeDatoSesion.traerUsuario();
-        lista = sAplicacionesJpa.traerDatosMenu(usuario);
+        
+        lista = TraeDatoSesion.traerListaMenu();
         DefaultSubMenu firstSubmenu = new DefaultSubMenu();
 
         DefaultMenuItem itemIndex = DefaultMenuItem.builder()

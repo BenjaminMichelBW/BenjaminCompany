@@ -1,6 +1,9 @@
 package utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.faces.context.FacesContext;
+import objetos.Menu;
 
 /**
  *
@@ -24,6 +27,12 @@ public class TraeDatoSesion {
         String usuario = "";
         usuario = (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("nombreUsuario");
         return usuario;
+    }
+    
+    public static List<Menu> traerListaMenu(){
+        List<Menu> listaMenu = new ArrayList<>();
+        listaMenu = (List<Menu>) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("listaMenu");
+        return listaMenu;
     }
 
     public static Boolean verificarSession() {

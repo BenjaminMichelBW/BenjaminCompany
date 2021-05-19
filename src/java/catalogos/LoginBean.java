@@ -1,7 +1,9 @@
 package catalogos;
 
+import controller.SAplicacionesJpaController;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -12,6 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import objetos.Menu;
 import objetos.Usuario;
 import respuestas.RespuestaLogin;
 import utils.HexDigest;
@@ -30,6 +33,7 @@ public class LoginBean implements Serializable {
     private String inputUsuario;
     private String inputPassword;
     private String nombreUsuario;
+    private List<Menu> listaMenu;
 
     /**
      * Inicio de sesión
@@ -51,7 +55,12 @@ public class LoginBean implements Serializable {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("nombreUsuario", usuario.getNombreUsuario());
 
             setNombreUsuario(TraeDatoSesion.traerNombreUsuario());
-                        
+
+            SAplicacionesJpaController sAplicacionesJpa = new SAplicacionesJpaController();
+            setListaMenu(sAplicacionesJpa.traerDatosMenu(usuario.getUsuario()));
+            
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("listaMenu", listaMenu);
+
             if (res.getRespuesta()
                     .getIdRespuesta() == 0) {
                 ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
@@ -160,7 +169,7 @@ public class LoginBean implements Serializable {
         this.inputPassword = inputPassword;
     }
 
-        /**
+    /**
      * @return the nombreUsuario
      */
     public String getNombreUsuario() {
@@ -175,5 +184,18 @@ public class LoginBean implements Serializable {
     }
 //</editor-fold>
 
+    /**
+     * @return the listaMenu
+     */
+    public List<Menu> getListaMenu() {
+        return listaMenu;
+    }
+
+    /**
+     * @param listaMenu the listaMenu to set
+     */
+    public void setListaMenu(List<Menu> listaMenu) {
+        this.listaMenu = listaMenu;
+    }
 
 }
