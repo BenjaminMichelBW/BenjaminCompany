@@ -11,6 +11,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import objetos.ActivacionReporte;
 
 /**
  *
@@ -21,11 +22,11 @@ import javax.faces.context.FacesContext;
 @ApplicationScoped
 public class ReporteActivacionBean {
 
-    private Date fechaInicio;
-    private Date fechaFin;
+    private ActivacionReporte activacionRep;
     private List<HActivacion> listaRepActivacion;
 
     public ReporteActivacionBean() {
+        activacionRep = new ActivacionReporte();
     }
 
     /**
@@ -38,16 +39,16 @@ public class ReporteActivacionBean {
      */
     public void buscarActivaciones() {
         try {
-            if (fechaInicio.before(fechaFin) || fechaInicio.equals(fechaFin)) {
+            if (activacionRep.getFechaInicio().before(activacionRep.getFechaFin()) || activacionRep.getFechaInicio().equals(activacionRep.getFechaFin())) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(fechaFin);
+                calendar.setTime(activacionRep.getFechaFin());
                 calendar.add(Calendar.HOUR, 23);
                 calendar.add(Calendar.MINUTE, 59);
-                fechaFin = calendar.getTime();
+                activacionRep.setFechaFin(calendar.getTime());
                 
                 
                 HActivacionJpaController hActivacionJpa = new HActivacionJpaController();
-                listaRepActivacion = hActivacionJpa.traerListaRagoFechaPeticion(fechaInicio, fechaFin);
+                listaRepActivacion = hActivacionJpa.traerListaRagoFechaPeticion(activacionRep);
                 
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Buscar", "Busqueda exitosa");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -64,33 +65,6 @@ public class ReporteActivacionBean {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Gets y Sets">
-    /**
-     * @return the fechaInicio
-     */
-    public Date getFechaInicio() {
-        return fechaInicio;
-    }
-
-    /**
-     * @param fechaInicio the fechaInicio to set
-     */
-    public void setFechaInicio(Date fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    /**
-     * @return the fechaFin
-     */
-    public Date getFechaFin() {
-        return fechaFin;
-    }
-
-    /**
-     * @param fechaFin the fechaFin to set
-     */
-    public void setFechaFin(Date fechaFin) {
-        this.fechaFin = fechaFin;
-    }
 
     /**
      * @return the listaRepActivacion
@@ -104,6 +78,20 @@ public class ReporteActivacionBean {
      */
     public void setListaRepActivacion(List<HActivacion> listaRepActivacion) {
         this.listaRepActivacion = listaRepActivacion;
+    }
+    
+        /**
+     * @return the activacionRep
+     */
+    public ActivacionReporte getActivacionRep() {
+        return activacionRep;
+    }
+
+    /**
+     * @param activacionRep the activacionRep to set
+     */
+    public void setActivacionRep(ActivacionReporte activacionRep) {
+        this.activacionRep = activacionRep;
     }
 //</editor-fold>
 

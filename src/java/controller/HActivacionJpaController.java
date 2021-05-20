@@ -12,9 +12,14 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import entidades.CCiudad;
+import entidades.CCiudad_;
 import entidades.CClientes;
+import entidades.CClientes_;
 import entidades.CDistribuidor;
+import entidades.CDistribuidor_;
+import entidades.CTipoTelefono;
 import entidades.HActivacion;
+import entidades.HActivacion_;
 import entidades.SUsuarios;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,13 +29,18 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CollectionJoin;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
+import objetos.ActivacionReporte;
 import utils.LocalEntityManagerFactory;
 
 /**
  *
  * @author Benjamin Michel
+ * @since 2021-05-20
  */
 public class HActivacionJpaController implements Serializable {
 
@@ -63,6 +73,11 @@ public class HActivacionJpaController implements Serializable {
                 idDistribuidor = em.getReference(idDistribuidor.getClass(), idDistribuidor.getIdDistribuidor());
                 HActivacion.setIdDistribuidor(idDistribuidor);
             }
+            CTipoTelefono idTipoTelefonia = HActivacion.getIdTipoTelefonia();
+            if (idTipoTelefonia != null) {
+                idTipoTelefonia = em.getReference(idTipoTelefonia.getClass(), idTipoTelefonia.getId());
+                HActivacion.setIdTipoTelefonia(idTipoTelefonia);
+            }
             SUsuarios idUsuario = HActivacion.getIdUsuario();
             if (idUsuario != null) {
                 idUsuario = em.getReference(idUsuario.getClass(), idUsuario.getIdUsuario());
@@ -80,6 +95,10 @@ public class HActivacionJpaController implements Serializable {
             if (idDistribuidor != null) {
                 idDistribuidor.getHActivacionCollection().add(HActivacion);
                 idDistribuidor = em.merge(idDistribuidor);
+            }
+            if (idTipoTelefonia != null) {
+                idTipoTelefonia.getHActivacionCollection().add(HActivacion);
+                idTipoTelefonia = em.merge(idTipoTelefonia);
             }
             if (idUsuario != null) {
                 idUsuario.getHActivacionCollection().add(HActivacion);
@@ -105,6 +124,8 @@ public class HActivacionJpaController implements Serializable {
             CClientes idClienteNew = HActivacion.getIdCliente();
             CDistribuidor idDistribuidorOld = persistentHActivacion.getIdDistribuidor();
             CDistribuidor idDistribuidorNew = HActivacion.getIdDistribuidor();
+            CTipoTelefono idTipoTelefoniaOld = persistentHActivacion.getIdTipoTelefonia();
+            CTipoTelefono idTipoTelefoniaNew = HActivacion.getIdTipoTelefonia();
             SUsuarios idUsuarioOld = persistentHActivacion.getIdUsuario();
             SUsuarios idUsuarioNew = HActivacion.getIdUsuario();
             if (idCiudadNew != null) {
@@ -118,6 +139,10 @@ public class HActivacionJpaController implements Serializable {
             if (idDistribuidorNew != null) {
                 idDistribuidorNew = em.getReference(idDistribuidorNew.getClass(), idDistribuidorNew.getIdDistribuidor());
                 HActivacion.setIdDistribuidor(idDistribuidorNew);
+            }
+            if (idTipoTelefoniaNew != null) {
+                idTipoTelefoniaNew = em.getReference(idTipoTelefoniaNew.getClass(), idTipoTelefoniaNew.getId());
+                HActivacion.setIdTipoTelefonia(idTipoTelefoniaNew);
             }
             if (idUsuarioNew != null) {
                 idUsuarioNew = em.getReference(idUsuarioNew.getClass(), idUsuarioNew.getIdUsuario());
@@ -147,6 +172,14 @@ public class HActivacionJpaController implements Serializable {
             if (idDistribuidorNew != null && !idDistribuidorNew.equals(idDistribuidorOld)) {
                 idDistribuidorNew.getHActivacionCollection().add(HActivacion);
                 idDistribuidorNew = em.merge(idDistribuidorNew);
+            }
+            if (idTipoTelefoniaOld != null && !idTipoTelefoniaOld.equals(idTipoTelefoniaNew)) {
+                idTipoTelefoniaOld.getHActivacionCollection().remove(HActivacion);
+                idTipoTelefoniaOld = em.merge(idTipoTelefoniaOld);
+            }
+            if (idTipoTelefoniaNew != null && !idTipoTelefoniaNew.equals(idTipoTelefoniaOld)) {
+                idTipoTelefoniaNew.getHActivacionCollection().add(HActivacion);
+                idTipoTelefoniaNew = em.merge(idTipoTelefoniaNew);
             }
             if (idUsuarioOld != null && !idUsuarioOld.equals(idUsuarioNew)) {
                 idUsuarioOld.getHActivacionCollection().remove(HActivacion);
@@ -199,6 +232,11 @@ public class HActivacionJpaController implements Serializable {
             if (idDistribuidor != null) {
                 idDistribuidor.getHActivacionCollection().remove(HActivacion);
                 idDistribuidor = em.merge(idDistribuidor);
+            }
+            CTipoTelefono idTipoTelefonia = HActivacion.getIdTipoTelefonia();
+            if (idTipoTelefonia != null) {
+                idTipoTelefonia.getHActivacionCollection().remove(HActivacion);
+                idTipoTelefonia = em.merge(idTipoTelefonia);
             }
             SUsuarios idUsuario = HActivacion.getIdUsuario();
             if (idUsuario != null) {
@@ -260,29 +298,53 @@ public class HActivacionJpaController implements Serializable {
         }
     }
 
-/**
-     * Regresa por rango fechas la informacion de Hactivacion
-     * 
-     * @param fechaInicio
-     * @param fechafin
-     * @return 
+    /**
+     * Regresa por rango fechas, lada y 
+     * si el usuario conoce el nombre del cliente y distribuidor 
+     * lo trae en caso de que no lo conosca se puede dejar vacios 
+     * trallendo informacion de Hactivacion
+     *
+     * @param ActivacionRep
+     * @return
      */
-    public List<HActivacion> traerListaRagoFechaPeticion (Date fechaInicio, Date fechafin){
+    public List<HActivacion> traerListaRagoFechaPeticion(ActivacionReporte ActivacionRep) {
         List<HActivacion> listaActivacion = new ArrayList<>();
+        List<Predicate> listaPredicados = new ArrayList<>();
         EntityManager em = null;
-        try{
+        try {
             em = getEntityManager();
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<HActivacion> cq = cb.createQuery(HActivacion.class);
-            
+
             Root<HActivacion> activacion = cq.from(HActivacion.class);
-            Predicate date = cb.between(activacion.get("fechaPeticion"), fechaInicio, fechafin);
-            cq.where(date);
+
+            Join<HActivacion, CCiudad> joinActivacionCiudad = activacion.join("idCiudad", JoinType.INNER);
+            Join<HActivacion, CDistribuidor> joinActivacionDistribuidor = activacion.join("idDistribuidor", JoinType.INNER);
+            Join<HActivacion, CClientes> joinActivacionCliente = activacion.join("idCliente", JoinType.INNER);
+
+            if (!ActivacionRep.getNombreDistribuidor().equals("")) {
+                Predicate distribuidores = cb.like(joinActivacionDistribuidor.get("nombre"), "%" + ActivacionRep.getNombreDistribuidor() + "%");
+                listaPredicados.add(distribuidores);
+            }
+
+            if (!ActivacionRep.getNombreCliente().equals("")) {
+                Predicate clientes = cb.like(joinActivacionCliente.get("nombreCliente"), "%" + ActivacionRep.getNombreCliente() + "%");
+                listaPredicados.add(clientes);
+            }
+
+            Predicate ladas = cb.equal(joinActivacionCiudad.get("lada"), ActivacionRep.getLada());
+            listaPredicados.add(ladas);
+            Predicate date = cb.between(activacion.get("fechaPeticion"), ActivacionRep.getFechaInicio(), ActivacionRep.getFechaFin());
+            listaPredicados.add(date);
             
+            if (listaPredicados.size() > 0) {
+                listaPredicados.forEach((p) -> cq.where(listaPredicados.toArray(new Predicate[listaPredicados.size()])));
+            }
+
             TypedQuery<HActivacion> query = em.createQuery(cq);
-            
+
             listaActivacion = query.getResultList();
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (em != null) {
@@ -291,5 +353,4 @@ public class HActivacionJpaController implements Serializable {
         }
         return listaActivacion;
     }
-    
 }

@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package entidades;
 
 import java.io.Serializable;
@@ -25,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  *
  * @author Benjamin Michel
+ * @since 2021-05-20
  */
 @Entity
 @Table(name = "H_ACTIVACION")
@@ -38,7 +40,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "HActivacion.findByDistribuidor", query = "SELECT h FROM HActivacion h WHERE h.distribuidor = :distribuidor"),
     @NamedQuery(name = "HActivacion.findByCliente", query = "SELECT h FROM HActivacion h WHERE h.cliente = :cliente"),
     @NamedQuery(name = "HActivacion.findByCiudad", query = "SELECT h FROM HActivacion h WHERE h.ciudad = :ciudad"),
-    @NamedQuery(name = "HActivacion.findByIdTipoTelefonia", query = "SELECT h FROM HActivacion h WHERE h.idTipoTelefonia = :idTipoTelefonia"),
     @NamedQuery(name = "HActivacion.findByDescripcionTipo", query = "SELECT h FROM HActivacion h WHERE h.descripcionTipo = :descripcionTipo"),
     @NamedQuery(name = "HActivacion.findByRespuestaAplicacion", query = "SELECT h FROM HActivacion h WHERE h.respuestaAplicacion = :respuestaAplicacion"),
     @NamedQuery(name = "HActivacion.findByMonto", query = "SELECT h FROM HActivacion h WHERE h.monto = :monto"),
@@ -67,8 +68,6 @@ public class HActivacion implements Serializable {
     private String cliente;
     @Column(name = "CIUDAD")
     private String ciudad;
-    @Column(name = "ID_TIPO_TELEFONIA")
-    private Long idTipoTelefonia;
     @Column(name = "DESCRIPCION_TIPO")
     private String descripcionTipo;
     @Column(name = "RESPUESTA_APLICACION")
@@ -95,6 +94,9 @@ public class HActivacion implements Serializable {
     @JoinColumn(name = "ID_DISTRIBUIDOR", referencedColumnName = "ID_DISTRIBUIDOR")
     @ManyToOne
     private CDistribuidor idDistribuidor;
+    @JoinColumn(name = "ID_TIPO_TELEFONIA", referencedColumnName = "ID")
+    @ManyToOne
+    private CTipoTelefono idTipoTelefonia;
     @JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID_USUARIO")
     @ManyToOne
     private SUsuarios idUsuario;
@@ -165,14 +167,6 @@ public class HActivacion implements Serializable {
 
     public void setCiudad(String ciudad) {
         this.ciudad = ciudad;
-    }
-
-    public Long getIdTipoTelefonia() {
-        return idTipoTelefonia;
-    }
-
-    public void setIdTipoTelefonia(Long idTipoTelefonia) {
-        this.idTipoTelefonia = idTipoTelefonia;
     }
 
     public String getDescripcionTipo() {
@@ -255,6 +249,14 @@ public class HActivacion implements Serializable {
         this.idDistribuidor = idDistribuidor;
     }
 
+    public CTipoTelefono getIdTipoTelefonia() {
+        return idTipoTelefonia;
+    }
+
+    public void setIdTipoTelefonia(CTipoTelefono idTipoTelefonia) {
+        this.idTipoTelefonia = idTipoTelefonia;
+    }
+
     public SUsuarios getIdUsuario() {
         return idUsuario;
     }
@@ -287,5 +289,5 @@ public class HActivacion implements Serializable {
     public String toString() {
         return "entidades.HActivacion[ id=" + id + " ]";
     }
-    
+
 }

@@ -52,10 +52,28 @@ and open the template in the editor.
                 <p:tab title="Activaciones" id="tabForm">
                     <div class="ui-g" >
                         <div class="ui-g-12 ui-md-6 ui-lg-3">
+                            <span class="ui-float-label">
+                                <p:inputText id="idLada" value="#{reporteActivacionBean.activacionRep.lada}" required="true" requiredMessage="Se requiere una lada" type="number"/>
+                                <p:outputLabel for="idLada" value="Lada"/>
+                            </span>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                            <span class="ui-float-label">
+                                <p:inputText id="idNombreCliente" value="#{reporteActivacionBean.activacionRep.nombreCliente}"/>
+                                <p:outputLabel for="idNombreCliente" value="Cliente"/>
+                            </span>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                            <span class="ui-float-label">
+                                <p:inputText id="idNombreDistribuidor" value="#{reporteActivacionBean.activacionRep.nombreDistribuidor}"/>
+                                <p:outputLabel for="idNombreDistribuidor" value="Distribuidor"/>
+                            </span>
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-3">
                             <p:outputLabel for="fechaIni" value="Fecha inicio" />
                             <p:datePicker id="fechaIni" 
                                           locale="es" 
-                                          value ="#{reporteActivacionBean.fechaInicio}"
+                                          value ="#{reporteActivacionBean.activacionRep.fechaInicio}"
                                           monthNavigator="true" 
                                           yearNavigator="true"
                                           pattern="dd/MM/yyyy" 
@@ -66,13 +84,14 @@ and open the template in the editor.
                             <p:outputLabel for="fechaFin" value="Fecha fin" />
                             <p:datePicker id="fechaFin" 
                                           locale="es" 
-                                          value="#{reporteActivacionBean.fechaFin}"
+                                          value="#{reporteActivacionBean.activacionRep.fechaFin}"
                                           monthNavigator="true" 
                                           yearNavigator="true"
                                           pattern="dd/MM/yyyy"
                                           required="true" 
                                           requiredMessage="Se necesita una fecha fin"/>
                         </div>
+
                         <div class="ui-g-12 ui-md-6 ui-lg-3">
                             <p:commandButton value="Buscar" 
                                              style="font-size:19px; margin-right:20px;" 
@@ -83,17 +102,9 @@ and open the template in the editor.
                     </div>
 
                     <p:dataTable id="dtActivacionRep" var="activacionRep" value="#{reporteActivacionBean.listaRepActivacion}" emptyMessage="No se encontraron registros."
-                                 paginator="true" rows="8" sortMode="single" widgetVar="activacionTablaRep" reflow="true"
+                                 paginator="true" rows="5" sortMode="single" widgetVar="activacionTablaRep" reflow="true"
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros">
-
-                        <p:column headerText="ICCID" sortBy="#{activacionRep.iccid}" filterBy="#{activacionRep.iccid}">
-                            <h:outputText value="#{activacionRep.iccid}" style="word-break: break-all;"/>
-                        </p:column>
-
-                        <p:column headerText="IMEI" sortBy="#{activacionRep.imei}" filterBy="#{activacionRep.imei}">
-                            <h:outputText value="#{activacionRep.imei}" style="word-break: break-all;"/>
-                        </p:column>
 
                         <p:column headerText="Nombre distribuidor" sortBy="#{activacionRep.idDistribuidor.nombre}" filterBy="#{activacionRep.idDistribuidor.nombre}">
                             <h:outputText value="#{activacionRep.idDistribuidor.nombre}" style="word-break: break-all;"/>
@@ -105,6 +116,10 @@ and open the template in the editor.
 
                         <p:column headerText="Ciudad" sortBy="#{activacionRep.idCiudad.descripcion}" filterBy="#{activacionRep.idCiudad.descripcion}">
                             <h:outputText value="#{activacionRep.idCiudad.descripcion}" style="word-break: break-all;"/>
+                        </p:column>
+
+                        <p:column headerText="Lada" sortBy="#{activacionRep.idCiudad.lada}" filterBy="#{activacionRep.idCiudad.lada}">
+                            <h:outputText value="#{activacionRep.idCiudad.lada}" style="word-break: break-all;"/>
                         </p:column>
 
                         <p:column headerText="Tipo telefonia" sortBy="#{activacionRep.descripcionTipo}" filterBy="#{activacionRep.descripcionTipo}">
